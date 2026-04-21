@@ -92,6 +92,37 @@
             line-height: 1.6;
         }
 
+        .contact {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a0a0a0;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .contact a {
+            color: #d4d4d4;
+            text-decoration: none;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 2px;
+        }
+
+        .contact a:hover {
+            color: #f0f0f0;
+            border-bottom-color: #555;
+        }
+
+        .obf {
+            unicode-bidi: bidi-override;
+            direction: rtl;
+        }
+
+        .obf-hide {
+            display: none;
+        }
+
         @media (max-width: 720px) {
             .pillars {
                 grid-template-columns: 1fr;
@@ -128,13 +159,44 @@
             </div>
             <div class="pillar">
                 <h2>Taste</h2>
-                <p>Good taste in infrastructure. I know what's solid, what scales, and what'll grow with you without turning into a headache later.</p>
+                <p>Good taste in infrastructure. I know what's solid, what scales, and what'll grow with you.</p>
             </div>
             <div class="pillar">
                 <h2>Explanation</h2>
                 <p>I'll actually explain everything: what works, what doesn't, why we're doing it this way, and any risks involved. No smoke and mirrors — you'll know exactly what you're getting.</p>
             </div>
         </section>
+
+        <footer class="contact">
+            <span id="email-link" data-u="info" data-d="kevinfilteau.com">
+                <span class="obf">moc.uaetlifnivek<span class="obf-hide">null</span>@ofni</span>
+            </span>
+            <span id="phone-link" data-a="1418" data-b="254" data-c="7193">
+                <span class="obf">3917-452 )814( 1+</span>
+            </span>
+        </footer>
     </main>
+    <script>
+        (function () {
+            var e = document.getElementById('email-link');
+            if (e) {
+                var addr = e.dataset.u + '@' + e.dataset.d;
+                var a = document.createElement('a');
+                a.href = 'mailto:' + addr;
+                a.textContent = addr;
+                e.replaceWith(a);
+            }
+            var p = document.getElementById('phone-link');
+            if (p) {
+                var a1 = p.dataset.a, a2 = p.dataset.b, a3 = p.dataset.c;
+                var raw = a1 + a2 + a3;
+                var pretty = '+' + raw[0] + ' (' + raw.slice(1, 4) + ') ' + a2 + '-' + a3;
+                var t = document.createElement('a');
+                t.href = 'tel:+' + raw;
+                t.textContent = pretty;
+                p.replaceWith(t);
+            }
+        })();
+    </script>
 </body>
 </html>
