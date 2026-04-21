@@ -7,7 +7,16 @@
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://kevinfilteau.com/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://kevinfilteau.com/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://kevinfilteau.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://kevinfilteau.com/"/>
+    </url>
+    <url>
+        <loc>https://kevinfilteau.com/fr/</loc>
+        <lastmod>2026-04-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kevinfilteau.com/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://kevinfilteau.com/fr/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://kevinfilteau.com/"/>
     </url>
 </urlset>
