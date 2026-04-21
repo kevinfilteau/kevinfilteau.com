@@ -98,6 +98,11 @@
             line-height: 1.55;
         }
 
+        .intro.lang-en {
+            max-width: none;
+            text-align: center;
+        }
+
         .intro strong {
             color: #f0f0f0;
             font-weight: 500;
@@ -293,6 +298,8 @@
                 document.querySelectorAll('.lang-switcher button').forEach(function (b) {
                     b.classList.toggle('active', b.dataset.lang === lang);
                 });
+                var intro = document.querySelector('.intro');
+                if (intro) intro.classList.toggle('lang-en', lang === 'en');
                 try { localStorage.setItem('lang', lang); } catch (err) {}
             }
 
