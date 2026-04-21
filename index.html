@@ -19,6 +19,44 @@
             color: #f0f0f0;
         }
 
+        .lang-switcher {
+            position: fixed;
+            top: 1.25rem;
+            left: 1.25rem;
+            display: flex;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .lang-switcher button {
+            background: transparent;
+            border: none;
+            color: #666;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font: inherit;
+            letter-spacing: inherit;
+            text-transform: inherit;
+            transition: color 0.15s;
+        }
+
+        .lang-switcher button:hover {
+            color: #a0a0a0;
+        }
+
+        .lang-switcher button.active {
+            color: #f0f0f0;
+        }
+
+        .lang-switcher .sep {
+            color: #333;
+            align-self: center;
+        }
+
         main {
             display: flex;
             flex-direction: column;
@@ -140,30 +178,36 @@
     </style>
 </head>
 <body>
+    <nav class="lang-switcher" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <span class="sep">/</span>
+        <button type="button" data-lang="fr">FR</button>
+    </nav>
+
     <main>
         <a href="mailto:info@kevinfilteau.com" class="hero">
             <h1>Kevin Filteau</h1>
-            <p>Intelligently built</p>
+            <p data-i18n="tagline">Intelligently built</p>
         </a>
 
         <section class="intro">
-            <p>I understand what you really need — not just what you think you need.</p>
-            <p>I build apps that fit your business well and feel natural for your team.</p>
-            <p>I speak your language, so you know how it works and feel in control.</p>
+            <p data-i18n="intro1">I understand what you really need — not just what you think you need.</p>
+            <p data-i18n="intro2">I build apps that fit your business well and feel natural for your team.</p>
+            <p data-i18n="intro3">I speak your language, so you know how it works and feel in control.</p>
         </section>
 
         <section class="pillars">
             <div class="pillar">
-                <h2>Understanding</h2>
-                <p>I don't just slap code together. I make sure I understand what I'm building and that it actually works in the real world.</p>
+                <h2 data-i18n="p1_title">Understanding</h2>
+                <p data-i18n="p1_body">I don't just slap code together. I make sure I understand what I'm building and that it actually works in the real world.</p>
             </div>
             <div class="pillar">
-                <h2>Taste</h2>
-                <p>I have good taste in infrastructure. I know what's solid, what scales, and what will grow with you.</p>
+                <h2 data-i18n="p2_title">Taste</h2>
+                <p data-i18n="p2_body">I have good taste in infrastructure. I know what's solid, what scales, and what will grow with you.</p>
             </div>
             <div class="pillar">
-                <h2>Explanation</h2>
-                <p>I'll explain everything clearly: what works, what doesn't, why we're doing it this way, and any risks involved. No smoke and mirrors — you'll know exactly what you're getting.</p>
+                <h2 data-i18n="p3_title">Explanation</h2>
+                <p data-i18n="p3_body">I'll explain everything clearly: what works, what doesn't, why we're doing it this way, and any risks involved. No smoke and mirrors — you'll know exactly what you're getting.</p>
             </div>
         </section>
 
@@ -176,6 +220,7 @@
             </span>
         </footer>
     </main>
+
     <script>
         (function () {
             var e = document.getElementById('email-link');
@@ -196,6 +241,66 @@
                 t.textContent = pretty;
                 p.replaceWith(t);
             }
+        })();
+
+        (function () {
+            var translations = {
+                en: {
+                    title: 'Kevin Filteau - Intelligently built',
+                    tagline: 'Intelligently built',
+                    intro1: 'I understand what you really need — not just what you think you need.',
+                    intro2: 'I build apps that fit your business well and feel natural for your team.',
+                    intro3: 'I speak your language, so you know how it works and feel in control.',
+                    p1_title: 'Understanding',
+                    p1_body: "I don't just slap code together. I make sure I understand what I'm building and that it actually works in the real world.",
+                    p2_title: 'Taste',
+                    p2_body: "I have good taste in infrastructure. I know what's solid, what scales, and what will grow with you.",
+                    p3_title: 'Explanation',
+                    p3_body: "I'll explain everything clearly: what works, what doesn't, why we're doing it this way, and any risks involved. No smoke and mirrors — you'll know exactly what you're getting."
+                },
+                fr: {
+                    title: 'Kevin Filteau - Conçu intelligemment',
+                    tagline: 'Conçu intelligemment',
+                    intro1: "Je comprends ce dont vous avez besoin — pas seulement ce que vous pensez avoir besoin.",
+                    intro2: "Je développe des applications qui s'adaptent bien à votre entreprise et dont l'utilisation est naturelle pour vos employés.",
+                    intro3: "Je parle votre langage, afin que vous connaissiez le fonctionnement et que vous vous sentiez en contrôle.",
+                    p1_title: 'Compréhension',
+                    p1_body: "Je ne me contente pas d'assembler du code. Je m'assure de bien comprendre ce que je développe et que ça fonctionne dans le monde réel.",
+                    p2_title: 'Goût',
+                    p2_body: "J'ai un bon sens de l'infrastructure. Je sais ce qui est solide, ce qui évoluera avec votre entreprise.",
+                    p3_title: 'Explication',
+                    p3_body: "Je vous explique tout clairement : ce qui fonctionne, ce qui ne fonctionne pas, pourquoi nous procédons ainsi et les risques. Aucune illusion — vous saurez exactement ce que vous obtenez."
+                }
+            };
+
+            function detectLang() {
+                try {
+                    var saved = localStorage.getItem('lang');
+                    if (saved && translations[saved]) return saved;
+                } catch (err) {}
+                var nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+                return nav.indexOf('fr') === 0 ? 'fr' : 'en';
+            }
+
+            function apply(lang) {
+                var t = translations[lang] || translations.en;
+                document.documentElement.lang = lang;
+                if (t.title) document.title = t.title;
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n');
+                    if (t[key]) el.textContent = t[key];
+                });
+                document.querySelectorAll('.lang-switcher button').forEach(function (b) {
+                    b.classList.toggle('active', b.dataset.lang === lang);
+                });
+                try { localStorage.setItem('lang', lang); } catch (err) {}
+            }
+
+            document.querySelectorAll('.lang-switcher button').forEach(function (b) {
+                b.addEventListener('click', function () { apply(b.dataset.lang); });
+            });
+
+            apply(detectLang());
         })();
     </script>
 </body>
