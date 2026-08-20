@@ -12,6 +12,10 @@ Layout is global and lives in `assets/`:
 - `assets/site.js` — reveals the obfuscated email and phone, remembers the language choice. Loaded with `defer`.
 - `assets/rays.svg` — the animated background, embedded with `<object>`. Chrome freezes an SVG used as a CSS `background-image` or in an `<img>` on its first frame; `<object>` gives it a document, so the sweep runs and the `prefers-reduced-motion` rule inside the file is honoured.
 
+`_headers` sends `Cache-Control: public, no-cache` for `/assets/*`. The shared files keep the same URLs
+across deploys and nothing fingerprints them, so Cloudflare's 4-hour default would serve new HTML with an
+old stylesheet. Browsers still store the files and only revalidate.
+
 Pages hold only their own content and metadata. English pages live at the root (`index.html`, `prepaid-code/`), French under `fr/`.
 
 To add a page, copy the shell of `index.html`: link `/assets/site.css`, defer `/assets/site.js`, copy the `.rays` div and the language switcher into the body, then write sections inside `<main>`. Do not restyle the layout in the page. The language auto-redirect is inline in the root `index.html` on purpose — it is per page and must run before the paint.

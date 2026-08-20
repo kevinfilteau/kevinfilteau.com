@@ -1,0 +1,6 @@
+# The shared assets keep the same URLs from one deploy to the next, and there is no
+# build step to fingerprint them. Cloudflare's default is 4 hours, which serves new
+# HTML with an old stylesheet after a deploy. no-cache still stores the file — the
+# browser only revalidates, so an unchanged file costs a 304, not a download.
+/assets/*
+  Cache-Control: public, no-cache
