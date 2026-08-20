@@ -105,6 +105,9 @@ main {
 
 .prose {
     text-align: left;
+    /* Full width, so a one-line paragraph keeps the same left edge as a long one
+       instead of shrinking to its text and centring. */
+    width: 100%;
     max-width: 700px;
     color: #f0f0f0;
     font-size: 1.5rem;
@@ -115,8 +118,18 @@ main {
 
 .prose p + p { margin-top: 2.25rem; }
 
+.prose a {
+    color: #f0f0f0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(240, 240, 240, 0.4);
+    transition: border-color 0.15s;
+}
+
+.prose a:hover { border-bottom-color: #f0f0f0; }
+
 .quote {
     text-align: left;
+    width: 100%;
     max-width: 700px;
 }
 
