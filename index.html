@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kevin Filteau — Work intelligently</title>
-    <meta name="description" content="Kevin Filteau equips teams with training, guidance and software so they perform better. Experience and taste, not improvisation.">
+    <meta name="description" content="AI can absorb your team’s repetitive, tedious work. Kevin Filteau helps you know which work, and equips your team to use AI day to day.">
     <meta name="author" content="Kevin Filteau">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0a0a0a">
@@ -17,7 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Kevin Filteau">
     <meta property="og:title" content="Kevin Filteau — Work intelligently">
-    <meta property="og:description" content="Equips teams with training, guidance and software so they perform better. Experience and taste, not improvisation.">
+    <meta property="og:description" content="AI can absorb your team’s repetitive, tedious work. The hard part is knowing which work — and how.">
     <meta property="og:url" content="https://kevinfilteau.com/">
     <meta property="og:locale" content="en_US">
     <meta property="og:locale:alternate" content="fr_CA">
@@ -28,7 +28,7 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kevin Filteau — Work intelligently">
-    <meta name="twitter:description" content="Equips teams with training, guidance and software so they perform better.">
+    <meta name="twitter:description" content="AI can absorb your team’s repetitive, tedious work. The hard part is knowing which work.">
     <meta name="twitter:image" content="https://kevinfilteau.com/og-image.png">
 
     <script type="application/ld+json">
@@ -40,12 +40,13 @@
         "email": "info@kevinfilteau.com",
         "telephone": "+1-418-254-7193",
         "jobTitle": "Software Developer",
-        "description": "Equips teams with training, guidance and software so they perform better.",
+        "description": "Helps teams know what AI can absorb, then equips them through training, guidance, and software shaped around the way they work.",
         "image": "https://kevinfilteau.com/og-image.png",
         "inLanguage": "en"
     }
     </script>
 
+    <!-- Per page, and it has to run before the paint, so it stays out of site.js. -->
     <script>
         (function () {
             try {
@@ -59,230 +60,12 @@
         })();
     </script>
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { background-color: #0a0a0a; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            color: #f0f0f0;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-        }
-
-
-        /* Rays behind the page, at full strength. */
-        .rays {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-        }
-
-        .rays svg { display: block; width: 100%; height: 100%; }
-
-        .lang-switcher {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.25rem;
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 1.25rem 1.5rem 0;
-            font-size: 0.85rem;
-            font-weight: 400;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .lang-switcher a {
-            color: rgba(240, 240, 240, 0.75);
-            padding: 0.25rem 0.5rem;
-            text-decoration: none;
-            transition: color 0.15s;
-        }
-
-        .lang-switcher a:hover { color: #f0f0f0; }
-        .lang-switcher a.active { color: #f0f0f0; }
-        .lang-switcher .sep { color: rgba(240, 240, 240, 0.35); align-self: center; }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 9rem);
-            max-width: 860px;
-            margin: 3rem auto;
-            padding: 4rem 3rem;
-            gap: 5rem;
-            background: rgba(0, 0, 0, 0.55);
-            border-radius: 20px;
-        }
-
-        .hero {
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .hero h1 {
-            color: #f0f0f0;
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .hero p {
-            color: #f0f0f0;
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-top: 0.5rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .mission {
-            text-align: left;
-            max-width: 700px;
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 400;
-            line-height: 1.55;
-            text-wrap: pretty;
-        }
-
-        .taste {
-            text-align: left;
-            max-width: 700px;
-        }
-
-        .taste h2 {
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            margin-bottom: 1rem;
-        }
-
-        .taste p {
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 400;
-            line-height: 1.6;
-            text-wrap: pretty;
-        }
-
-        .clients {
-            text-align: left;
-            max-width: 700px;
-        }
-
-        .clients::before {
-            content: "\201C";
-            display: block;
-            font-family: Georgia, 'Times New Roman', serif;
-            font-size: 3.5rem;
-            line-height: 1;
-            color: #f0f0f0;
-            margin-bottom: -1.25rem;
-        }
-
-        .clients p {
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 400;
-            line-height: 1.6;
-            text-wrap: pretty;
-        }
-
-
-        .contact {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: #f0f0f0;
-            font-size: 1rem;
-            font-weight: 400;
-        }
-
-        .contact a {
-            color: #f0f0f0;
-            text-decoration: none;
-        }
-
-        .contact a:hover { opacity: 0.7; }
-
-        .obf { unicode-bidi: bidi-override; direction: rtl; }
-        .obf-hide { display: none; }
-
-        @media (max-width: 720px) {
-            main {
-                min-height: calc(100vh - 5rem);
-                margin: 1rem;
-                padding: 3rem 1.5rem;
-                border-radius: 14px;
-            }
-
-            .lang-switcher { padding: 1rem 1rem 0; }
-            .hero h1 { font-size: 2.25rem; }
-            .mission { font-size: 1.15rem; }
-            .taste h2 { font-size: 1.25rem; }
-            .taste p { font-size: 1.15rem; }
-            .clients p { font-size: 1.15rem; }
-            .clients::before { font-size: 2.5rem; margin-bottom: -0.85rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/site.css">
+    <script src="/assets/site.js" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 2143" preserveAspectRatio="xMidYMid slice">
-          <style>
-            /* Rays converge on a fixed apex at (1500, 1032). Each ray is a sector drawn over
-               the teal base, painted head to tail: every ray overlaps its neighbour, so a ray
-               can turn without ever opening a seam. Each ray sweeps on its own long loop, and
-               the size of the sweep changes from swing to swing — big, small, half, full — so
-               no two passes look alike. Peak swing follows ray width (0.065 x span, capped at
-               3°) to keep the thin rays from pulsing; the three dark rays — slate, rust and
-               brown — carry a further 20% so they hold their own against the wide light ones.
-               At t = 0 every ray sits at 0°: the first frame is the source image. */
-            .rays .w {
-              transform-box: view-box;
-              transform-origin: 1500px 1032px;
-              animation-timing-function: ease-in-out;
-              animation-iteration-count: infinite;
-            }
-            .rays .slate  { animation-name: r-slate;  animation-duration: 61s; }  /* span 14.0°, peak 1.09° */
-            .rays .red    { animation-name: r-red;    animation-duration: 67s; }  /* span 14.3°, peak 0.93° */
-            .rays .salmon { animation-name: r-salmon; animation-duration: 89s; }  /* span 68.3°, peak 3.00° */
-            .rays .rust   { animation-name: r-rust;   animation-duration: 71s; }  /* span 15.0°, peak 1.18° */
-            .rays .green  { animation-name: r-green;  animation-duration: 79s; }  /* span 42.0°, peak 2.73° */
-            .rays .yellow { animation-name: r-yellow; animation-duration: 83s; }  /* span 59.2°, peak 3.00° */
-            .rays .brown  { animation-name: r-brown;  animation-duration: 53s; }  /* span 11.6°, peak 0.90° */
-
-            @keyframes r-slate  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(1.09deg); }  25% { transform: rotate(0.22deg); }  37.5% { transform: rotate(-0.65deg); } 50% { transform: rotate(0.38deg); } 62.5% { transform: rotate(-1.09deg); } 75% { transform: rotate(-0.16deg); } 87.5% { transform: rotate(0.60deg); }  100% { transform: rotate(0deg); } }
-            @keyframes r-red    { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(0.42deg); }  25% { transform: rotate(-0.79deg); } 37.5% { transform: rotate(-0.23deg); } 50% { transform: rotate(0.93deg); } 62.5% { transform: rotate(0.28deg); }  75% { transform: rotate(-0.47deg); } 87.5% { transform: rotate(0.70deg); }  100% { transform: rotate(0deg); } }
-            @keyframes r-salmon { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(-2.10deg); } 25% { transform: rotate(0.90deg); }  37.5% { transform: rotate(3.00deg); }  50% { transform: rotate(0.45deg); } 62.5% { transform: rotate(-1.35deg); } 75% { transform: rotate(-3.00deg); } 87.5% { transform: rotate(0.75deg); }  100% { transform: rotate(0deg); } }
-            @keyframes r-rust   { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(0.94deg); }  25% { transform: rotate(-0.41deg); } 37.5% { transform: rotate(0.24deg); }  50% { transform: rotate(-1.18deg); } 62.5% { transform: rotate(0.71deg); } 75% { transform: rotate(0.18deg); }  87.5% { transform: rotate(-0.65deg); } 100% { transform: rotate(0deg); } }
-            @keyframes r-green  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(2.73deg); }  25% { transform: rotate(0.55deg); }  37.5% { transform: rotate(-1.64deg); } 50% { transform: rotate(0.96deg); } 62.5% { transform: rotate(-2.73deg); } 75% { transform: rotate(-0.41deg); } 87.5% { transform: rotate(1.50deg); }  100% { transform: rotate(0deg); } }
-            @keyframes r-yellow { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(1.35deg); }  25% { transform: rotate(-2.55deg); } 37.5% { transform: rotate(-0.75deg); } 50% { transform: rotate(3.00deg); } 62.5% { transform: rotate(0.90deg); }  75% { transform: rotate(-1.50deg); } 87.5% { transform: rotate(2.25deg); }  100% { transform: rotate(0deg); } }
-            @keyframes r-brown  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(-0.63deg); } 25% { transform: rotate(0.27deg); }  37.5% { transform: rotate(0.90deg); }  50% { transform: rotate(0.14deg); } 62.5% { transform: rotate(-0.41deg); } 75% { transform: rotate(-0.90deg); } 87.5% { transform: rotate(0.23deg); }  100% { transform: rotate(0deg); } }
-
-            @media (prefers-reduced-motion: reduce) {
-              .rays .w { animation: none; }
-            }
-          </style>
-
-          <rect x="-9000" y="-9000" width="21000" height="21000" fill="#4196a6"/>
-          <path class="w slate"  d="M1499.9 1031.9 L10458.9 1890.6 L10107.3 3661.4 L9409.3 5326.3 Z" fill="#436270"/>
-          <path class="w red"    d="M1499.9 1031.9 L9983.7 4036.2 L9203.6 5685.2 L8107.0 7143.1 Z" fill="#e35148"/>
-          <path class="w salmon" d="M1499.9 1031.9 L8981.7 6034.3 L4216.9 9612.0 L-1738.9 9428.9 Z" fill="#ea7642"/>
-          <path class="w rust"   d="M1499.9 1031.9 L-385.4 9832.2 L-2173.9 9247.9 L-3801.8 8304.5 Z" fill="#c75733"/>
-          <path class="w green"  d="M1499.9 1031.9 L-2598.8 9044.4 L-5649.8 6498.3 L-7306.9 2886.5 Z" fill="#55b682"/>
-          <path class="w yellow" d="M1499.9 1031.9 L-6908.3 4241.4 L-7312.5 -795.7 L-4938.6 -5256.6 Z" fill="#f0a435"/>
-          <path class="w brown"  d="M1499.9 1031.9 L-5560.6 -4549.2 L-4961.4 -5233.2 L-4296.2 -5853.2 Z" fill="#906531"/>
-        </svg>
+        <object type="image/svg+xml" data="/assets/rays.svg" tabindex="-1"></object>
     </div>
 
     <nav class="lang-switcher" aria-label="Language">
@@ -297,19 +80,20 @@
             <p>Work intelligently</p>
         </a>
 
-        <section class="mission">
-            <p>My mission is to equip teams — through training, guidance and the software I put in place — so they perform better and everyone excels at what they do best.</p>
+        <section class="prose">
+            <p>AI can absorb your team’s repetitive, tedious work. The hard part is knowing which work — and how.</p>
+            <p>Anyone can improvise with AI — that’s how it starts. To build something that lasts, draw on my experience: seeing how your systems, your team, and your constraints fit together, and telling which choices will still hold up.</p>
+            <p>In practice, you equip your team: they learn to use AI day to day, to spot what’s worth automating, and to rely on software shaped around the way you work — not the other way around. The tedious work fades, and everyone gets back to what they do best.</p>
         </section>
 
-        <section class="taste">
-            <h2>Taste</h2>
-            <p>Anyone can improvise with AI. My strength is knowing how systems, teams and constraints fit together — and which choice still holds up in two years. That’s taste, and it’s the one thing that can’t be improvised.</p>
+        <section class="quote">
+            <p><span class="qm">“</span><em>Judgment can’t be improvised.</em><span class="qm">”</span></p>
         </section>
 
-        <section class="clients">
-            <p>I like to work with calm, direct and curious people — often a team member with direct access to the decision‑maker. They value lasting capability for the team.</p>
+        <section class="prose">
+            <p>I like working with calm, direct, and curious people who think long term for their team.</p>
+            <p>Write to me — start with one real irritant, and we’ll look at what we can do about it.</p>
         </section>
-
 
         <footer class="contact">
             <span id="email-link" data-u="info" data-d="kevinfilteau.com">
@@ -320,34 +104,5 @@
             </span>
         </footer>
     </main>
-
-    <script>
-        (function () {
-            var e = document.getElementById('email-link');
-            if (e) {
-                var addr = e.dataset.u + '@' + e.dataset.d;
-                var a = document.createElement('a');
-                a.href = 'mailto:' + addr;
-                a.textContent = addr;
-                e.replaceWith(a);
-            }
-            var p = document.getElementById('phone-link');
-            if (p) {
-                var a1 = p.dataset.a, a2 = p.dataset.b, a3 = p.dataset.c;
-                var raw = a1 + a2 + a3;
-                var pretty = '+' + raw[0] + ' ' + raw.slice(1, 4) + '-' + a2 + '-' + a3;
-                var t = document.createElement('a');
-                t.href = 'tel:+' + raw;
-                t.textContent = pretty;
-                p.replaceWith(t);
-            }
-
-            document.querySelectorAll('.lang-switcher a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    try { localStorage.setItem('lang', link.dataset.lang); } catch (err) {}
-                });
-            });
-        })();
-    </script>
 </body>
 </html>

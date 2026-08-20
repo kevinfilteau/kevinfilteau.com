@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 2143" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Colour rays converging near the centre">
+  <style>
+    /* Rays converge on a fixed apex at (1500, 1032). Each ray is a sector drawn over
+       the teal base, painted head to tail: every ray overlaps its neighbour, so a ray
+       can turn without ever opening a seam. Each ray sweeps on its own long loop, and
+       the size of the sweep changes from swing to swing — big, small, half, full — so
+       no two passes look alike. Peak swing follows ray width (0.065 x span, capped at
+       3°) to keep the thin rays from pulsing; the three dark rays — slate, rust and
+       brown — carry a further 20% so they hold their own against the wide light ones.
+       At t = 0 every ray sits at 0°: the first frame is the source image. */
+    .w {
+      transform-box: view-box;
+      transform-origin: 1500px 1032px;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+    .slate  { animation-name: r-slate;  animation-duration: 61s; }  /* span 14.0°, peak 1.09° */
+    .red    { animation-name: r-red;    animation-duration: 67s; }  /* span 14.3°, peak 0.93° */
+    .salmon { animation-name: r-salmon; animation-duration: 89s; }  /* span 68.3°, peak 3.00° */
+    .rust   { animation-name: r-rust;   animation-duration: 71s; }  /* span 15.0°, peak 1.18° */
+    .green  { animation-name: r-green;  animation-duration: 79s; }  /* span 42.0°, peak 2.73° */
+    .yellow { animation-name: r-yellow; animation-duration: 83s; }  /* span 59.2°, peak 3.00° */
+    .brown  { animation-name: r-brown;  animation-duration: 53s; }  /* span 11.6°, peak 0.90° */
+
+    @keyframes r-slate  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(1.09deg); }  25% { transform: rotate(0.22deg); }  37.5% { transform: rotate(-0.65deg); } 50% { transform: rotate(0.38deg); } 62.5% { transform: rotate(-1.09deg); } 75% { transform: rotate(-0.16deg); } 87.5% { transform: rotate(0.60deg); }  100% { transform: rotate(0deg); } }
+    @keyframes r-red    { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(0.42deg); }  25% { transform: rotate(-0.79deg); } 37.5% { transform: rotate(-0.23deg); } 50% { transform: rotate(0.93deg); } 62.5% { transform: rotate(0.28deg); }  75% { transform: rotate(-0.47deg); } 87.5% { transform: rotate(0.70deg); }  100% { transform: rotate(0deg); } }
+    @keyframes r-salmon { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(-2.10deg); } 25% { transform: rotate(0.90deg); }  37.5% { transform: rotate(3.00deg); }  50% { transform: rotate(0.45deg); } 62.5% { transform: rotate(-1.35deg); } 75% { transform: rotate(-3.00deg); } 87.5% { transform: rotate(0.75deg); }  100% { transform: rotate(0deg); } }
+    @keyframes r-rust   { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(0.94deg); }  25% { transform: rotate(-0.41deg); } 37.5% { transform: rotate(0.24deg); }  50% { transform: rotate(-1.18deg); } 62.5% { transform: rotate(0.71deg); } 75% { transform: rotate(0.18deg); }  87.5% { transform: rotate(-0.65deg); } 100% { transform: rotate(0deg); } }
+    @keyframes r-green  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(2.73deg); }  25% { transform: rotate(0.55deg); }  37.5% { transform: rotate(-1.64deg); } 50% { transform: rotate(0.96deg); } 62.5% { transform: rotate(-2.73deg); } 75% { transform: rotate(-0.41deg); } 87.5% { transform: rotate(1.50deg); }  100% { transform: rotate(0deg); } }
+    @keyframes r-yellow { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(1.35deg); }  25% { transform: rotate(-2.55deg); } 37.5% { transform: rotate(-0.75deg); } 50% { transform: rotate(3.00deg); } 62.5% { transform: rotate(0.90deg); }  75% { transform: rotate(-1.50deg); } 87.5% { transform: rotate(2.25deg); }  100% { transform: rotate(0deg); } }
+    @keyframes r-brown  { 0% { transform: rotate(0deg); } 12.5% { transform: rotate(-0.63deg); } 25% { transform: rotate(0.27deg); }  37.5% { transform: rotate(0.90deg); }  50% { transform: rotate(0.14deg); } 62.5% { transform: rotate(-0.41deg); } 75% { transform: rotate(-0.90deg); } 87.5% { transform: rotate(0.23deg); }  100% { transform: rotate(0deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .w { animation: none; }
+    }
+  </style>
+
+  <rect x="-9000" y="-9000" width="21000" height="21000" fill="#4196a6"/>
+  <path class="w slate"  d="M1499.9 1031.9 L10458.9 1890.6 L10107.3 3661.4 L9409.3 5326.3 Z" fill="#436270"/>
+  <path class="w red"    d="M1499.9 1031.9 L9983.7 4036.2 L9203.6 5685.2 L8107.0 7143.1 Z" fill="#e35148"/>
+  <path class="w salmon" d="M1499.9 1031.9 L8981.7 6034.3 L4216.9 9612.0 L-1738.9 9428.9 Z" fill="#ea7642"/>
+  <path class="w rust"   d="M1499.9 1031.9 L-385.4 9832.2 L-2173.9 9247.9 L-3801.8 8304.5 Z" fill="#c75733"/>
+  <path class="w green"  d="M1499.9 1031.9 L-2598.8 9044.4 L-5649.8 6498.3 L-7306.9 2886.5 Z" fill="#55b682"/>
+  <path class="w yellow" d="M1499.9 1031.9 L-6908.3 4241.4 L-7312.5 -795.7 L-4938.6 -5256.6 Z" fill="#f0a435"/>
+  <path class="w brown"  d="M1499.9 1031.9 L-5560.6 -4549.2 L-4961.4 -5233.2 L-4296.2 -5853.2 Z" fill="#906531"/>
+</svg>
