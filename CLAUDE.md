@@ -12,9 +12,9 @@ Layout is global and lives in `assets/`:
 - `assets/site.js` — reveals the obfuscated email and phone, remembers the language choice. Loaded with `defer`.
 - `assets/rays.svg` — the animated background, embedded with `<object>`. Chrome freezes an SVG used as a CSS `background-image` or in an `<img>` on its first frame; `<object>` gives it a document, so the sweep runs and the `prefers-reduced-motion` rule inside the file is honoured.
 
-`_headers` sends `Cache-Control: public, no-cache` for `/assets/*`. The shared files keep the same URLs
-across deploys and nothing fingerprints them, so Cloudflare's 4-hour default would serve new HTML with an
-old stylesheet. Browsers still store the files and only revalidate.
+**Bump `?v=<date>` on the asset links in every page whenever you change a file in `assets/`.** Cloudflare
+caches `/assets/*` for 4 hours and kept doing so when the policy was set in `_headers`, so a deploy without
+a bump serves new HTML with the old stylesheet. The query string is the only thing that invalidates it.
 
 Pages hold only their own content and metadata. English pages live at the root (`index.html`, `prepaid-code/`), French under `fr/`.
 
