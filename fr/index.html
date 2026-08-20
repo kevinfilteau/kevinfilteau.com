@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kevin Filteau — Travaillez intelligemment</title>
-    <meta name="description" content="Kevin Filteau outille les équipes par la formation, l’accompagnement et des solutions logicielles pour qu’elles gagnent en performance.">
+    <meta name="description" content="L’IA peut absorber les tâches cléricales et fastidieuses de votre équipe. Kevin Filteau vous aide à discerner lesquelles et à outiller votre équipe.">
     <meta name="author" content="Kevin Filteau">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0a0a0a">
@@ -17,7 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Kevin Filteau">
     <meta property="og:title" content="Kevin Filteau — Travaillez intelligemment">
-    <meta property="og:description" content="Outille les équipes par la formation, l’accompagnement et des solutions logicielles pour qu’elles gagnent en performance.">
+    <meta property="og:description" content="L’IA peut absorber les tâches cléricales et fastidieuses de votre équipe. Encore faut-il savoir lesquelles — et comment.">
     <meta property="og:url" content="https://kevinfilteau.com/fr/">
     <meta property="og:locale" content="fr_CA">
     <meta property="og:locale:alternate" content="en_US">
@@ -28,7 +28,7 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kevin Filteau — Travaillez intelligemment">
-    <meta name="twitter:description" content="Outille les équipes par la formation, l’accompagnement et des solutions logicielles.">
+    <meta name="twitter:description" content="L’IA peut absorber les tâches cléricales et fastidieuses de votre équipe. Encore faut-il savoir lesquelles.">
     <meta name="twitter:image" content="https://kevinfilteau.com/og-image.png">
 
     <script type="application/ld+json">
@@ -40,7 +40,7 @@
         "email": "info@kevinfilteau.com",
         "telephone": "+1-418-254-7193",
         "jobTitle": "Développeur logiciel",
-        "description": "Outille les équipes par la formation, l’accompagnement et des solutions logicielles.",
+        "description": "Aide les équipes à discerner ce que l’IA peut absorber, puis les outille par la formation, l’accompagnement et des solutions logicielles adaptées à leurs façons de faire.",
         "image": "https://kevinfilteau.com/og-image.png",
         "inLanguage": "fr"
     }
@@ -56,7 +56,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #f0f0f0;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         }
 
 
@@ -103,8 +103,17 @@
             margin: 3rem auto;
             padding: 4rem 3rem;
             gap: 5rem;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.42);
+            backdrop-filter: blur(28px) saturate(130%);
+            -webkit-backdrop-filter: blur(28px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Without a backdrop filter the panel is only a tint, so make it carry more. */
+        @supports not (backdrop-filter: blur(1px)) {
+            main { background: rgba(0, 0, 0, 0.55); }
         }
 
         .hero {
@@ -135,51 +144,33 @@
             color: #f0f0f0;
             font-size: 1.5rem;
             font-weight: 400;
-            line-height: 1.55;
+            line-height: 1.45;
             text-wrap: pretty;
         }
 
-        .taste {
+        .mission p + p { margin-top: 1.25rem; }
+
+        .quote {
             text-align: left;
             max-width: 700px;
         }
 
-        .taste h2 {
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            margin-bottom: 1rem;
-        }
-
-        .taste p {
-            color: #f0f0f0;
-            font-size: 1.5rem;
-            font-weight: 400;
-            line-height: 1.6;
-            text-wrap: pretty;
-        }
-
-        .clients {
-            text-align: left;
-            max-width: 700px;
-        }
-
-        .clients::before {
+        .quote::before {
             content: "\00AB";
             display: block;
             font-family: Georgia, 'Times New Roman', serif;
             font-size: 3.5rem;
             line-height: 1;
             color: #f0f0f0;
+            text-align: center;
             margin-bottom: 0.25rem;
         }
 
-        .clients p {
+        .quote p {
             color: #f0f0f0;
             font-size: 1.5rem;
             font-weight: 400;
-            line-height: 1.6;
+            line-height: 1.45;
             text-wrap: pretty;
         }
 
@@ -215,10 +206,8 @@
             .lang-switcher { padding: 1rem 1rem 0; }
             .hero h1 { font-size: 2.25rem; }
             .mission { font-size: 1.15rem; }
-            .taste h2 { font-size: 1.25rem; }
-            .taste p { font-size: 1.15rem; }
-            .clients p { font-size: 1.15rem; }
-            .clients::before { font-size: 2.5rem; margin-bottom: 0.25rem; }
+            .quote p { font-size: 1.15rem; }
+            .quote::before { font-size: 2.5rem; margin-bottom: 0.25rem; }
         }
     </style>
 </head>
@@ -285,18 +274,19 @@
         </a>
 
         <section class="mission">
-            <p>Ma mission est d’outiller les équipes — par la formation, l’accompagnement et la mise en place de solutions logicielles — pour qu’elles gagnent en performance et que chacun excelle dans ce qu’il fait de mieux.</p>
+            <p>L’IA peut absorber les tâches cléricales et fastidieuses de votre équipe. Encore faut-il savoir lesquelles — et comment.</p>
+            <p>Improviser avec l’IA, tout le monde en est capable — c’est comme ça qu’on commence. Mais pour bâtir quelque chose qui dure, profitez de mon expérience&nbsp;: voir comment vos systèmes, votre équipe et vos contraintes s’articulent, et discerner ce qui tiendra la route.</p>
+            <p>Concrètement, vous outillez votre équipe&nbsp;: elle apprend à utiliser l’IA au quotidien, à reconnaître ce qui vaut la peine d’être automatisé, et à s’appuyer sur des solutions logicielles adaptées à vos façons de faire — pas l’inverse. Le fastidieux s’efface, et chacun peut se consacrer à sa vraie mission&nbsp;: ce qu’il fait de mieux.</p>
+            <p>Je travaille avec des personnes calmes, directes et curieuses, qui pensent à long terme pour leur équipe.</p>
         </section>
 
-        <section class="taste">
-            <h2>Goût</h2>
-            <p>N’importe qui peut improviser avec l’IA. Ma force, c’est de savoir comment les systèmes, les équipes et les contraintes s’articulent — et quel choix tiendra encore dans deux ans. C’est ça, le goût, et c’est la seule chose qui ne s’improvise pas.</p>
+        <section class="quote">
+            <p>Le discernement, ça ne s’improvise pas.</p>
         </section>
 
-        <section class="clients">
-            <p>J’aime travailler avec des personnes calmes, directes et curieuses qui pensent à long terme pour leur équipe.</p>
+        <section class="mission">
+            <p>Écrivez-moi — partons d’un irritant concret, et regardons ensemble ce qui est faisable.</p>
         </section>
-
 
         <footer class="contact">
             <span id="email-link" data-u="info" data-d="kevinfilteau.com">
