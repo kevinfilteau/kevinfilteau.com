@@ -116,7 +116,11 @@ main {
     text-wrap: pretty;
 }
 
-.prose p + p { margin-top: 2.25rem; }
+.prose > * + * { margin-top: 2.25rem; }
+
+.prose ul { padding-left: 1.25rem; }
+
+.prose li + li { margin-top: 0.75rem; }
 
 .prose a {
     color: #f0f0f0;
