@@ -34,6 +34,41 @@ body {
     pointer-events: none;
 }
 
+/* Wordmark at the top of every page, a link back to the home page. */
+.brand {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem 0;
+}
+
+.brand a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #f0f0f0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.brand a:hover { opacity: 0.75; }
+
+.brand .k {
+    display: inline-grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.45rem;
+    background: #0a0a0a;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-shadow: none;
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -325,6 +360,42 @@ main {
 .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
 .card .actions { margin-top: 0.5rem; }
 
+.link-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: rgba(240, 240, 240, 0.7);
+    font: inherit;
+    font-size: 1rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link-button:hover { color: #f0f0f0; }
+.cancel { margin-top: 2.5rem; text-align: center; }
+.cancel[hidden] { display: none; }
+
+/* Confirmation before wiping the form. */
+.confirm {
+    margin: auto; /* the global reset removes the browser's centring */
+    max-width: 24rem;
+    padding: 1.5rem;
+    color: #f0f0f0;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.confirm::backdrop { background: rgba(0, 0, 0, 0.6); }
+.confirm h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+.confirm .actions { margin-top: 1.5rem; }
+
+.book h2 { margin-top: 2rem; }
+.book h1 + p, .book h2 + ul, .book h2 + p { margin-top: 0; }
+.book ul + h2, .book p + h2 { margin-top: 2rem; }
+
 .turnstile { margin-top: 1.5rem; }
 .turnstile:empty { display: none; }
 
@@ -391,6 +462,7 @@ main {
     .book h1 { font-size: 1.6rem; }
     .book h2 { font-size: 1.3rem; }
     .book, .field > input, .field > textarea { font-size: 1.05rem; }
+    .brand { padding: 1rem 1rem 0; }
     .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
     .quote p { font-size: 1.15rem; }

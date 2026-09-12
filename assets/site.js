@@ -49,6 +49,11 @@ var turnstileToken = (function () {
     };
 })();
 
+/* After a payment the booking is done: forget it in this browser. */
+if (document.querySelector('[data-clear-booking]')) {
+    try { sessionStorage.removeItem('book'); } catch (err) {}
+}
+
 /* The booking form: a fixed first step, the assistant chat, then review and pay.
    The transcript and the summary live in sessionStorage so a refresh or a
    cancelled payment does not empty them. */
@@ -200,8 +205,12 @@ var turnstileToken = (function () {
         return true;
     }
 
+    var cancel = form.querySelector('.cancel');
+    var confirm = form.querySelector('.confirm');
+
     function show(n) {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
+        cancel.hidden = n === 0;
         if (n === CHAT) renderChat();
         if (n === steps.length - 1) summarize();
         var error = steps[n].querySelector('.form-error');
@@ -219,6 +228,19 @@ var turnstileToken = (function () {
         var next = btn.dataset.go === 'next' ? current + 1 : current - 1;
         if (next > current && (!valid(steps[current]) || (current === CHAT && !state.summary))) return;
         show(next);
+    });
+
+    // Cancel: ask first, then wipe everything this browser holds and go home.
+    form.addEventListener('click', function (e) {
+        if (e.target.closest('[data-cancel]')) { confirm.showModal(); return; }
+        var choice = e.target.closest('[data-confirm]');
+        if (!choice) return;
+        confirm.close();
+        if (choice.dataset.confirm !== 'yes') return;
+        try { sessionStorage.removeItem(key); } catch (err) {}
+        state = { contact: {}, messages: [], summary: null };
+        form.reset();
+        location.assign('/');
     });
 
     draft.addEventListener('keydown', function (e) {

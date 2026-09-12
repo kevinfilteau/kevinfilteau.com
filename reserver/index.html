@@ -19,14 +19,18 @@
     <meta property="og:locale" content="fr_CA">
     <meta property="og:image" content="https://kevinfilteau.com/og-image.png">
 
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12d">
-    <script src="/assets/site.js?v=2026-09-12d" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12e">
+    <script src="/assets/site.js?v=2026-09-12e" defer></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12d" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12e" tabindex="-1"></object>
     </div>
+
+    <header class="brand">
+        <a href="/" aria-label="Accueil"><span class="k" aria-hidden="true">K</span>Kevin Filteau</a>
+    </header>
 
     <main>
         <form id="book" class="book" novalidate>
@@ -68,6 +72,7 @@
                     <span class="hint">Pour les textos seulement, jamais d’appel.</span>
                     <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" pattern="\+?1?[\s.-]*\(?[0-9]{3}\)?[\s.-]*[0-9]{3}[\s.-]*[0-9]{4}" placeholder="418 555-0199" required>
                 </div>
+                <p class="hint">Vos coordonnées servent à organiser la rencontre, rien d’autre. <a href="/confidentialite/">Comment vos données sont traitées</a>.</p>
                 <div class="field">
                     <span class="legend" id="channel-label">Comment préférez-vous qu’on vous joigne?</span>
                     <div class="choices" role="radiogroup" aria-labelledby="channel-label" data-required="Choisissez un moyen.">
@@ -134,6 +139,19 @@
                 </div>
             </section>
 
+            <div class="cancel" hidden>
+                <button type="button" class="link-button" data-cancel>Annuler et tout effacer</button>
+            </div>
+
+            <dialog class="confirm">
+                <h3>Annuler la réservation?</h3>
+                <p>Vos coordonnées et vos réponses seront effacées de ce navigateur.</p>
+                <div class="actions">
+                    <button type="button" class="cta secondary" data-confirm="no">Continuer</button>
+                    <button type="button" class="cta" data-confirm="yes">Tout effacer</button>
+                </div>
+            </dialog>
+
             <!-- Turnstile widget for kevinfilteau.com; the secret is TURNSTILE_SECRET_KEY on the Pages project. -->
             <div class="turnstile" data-sitekey="0x4AAAAAAExdbahkJHvtso75"></div>
         </form>
@@ -146,6 +164,7 @@
                 <span class="obf">3917-452-814 1+</span>
             </span>
             <a href="https://www.linkedin.com/company/kevin-filteau" rel="me noopener" target="_blank">LinkedIn</a>
+            <a href="/confidentialite/">Confidentialité</a>
         </footer>
     </main>
 </body>
