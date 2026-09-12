@@ -7,6 +7,7 @@
 
 import { human } from '../../lib/turnstile.js';
 import { SIZES, CHALLENGES } from './chat.js';
+import { validateContact } from '../../lib/contact.js';
 
 const PRICE = { currency: 'cad', unit_amount: 25000 };
 const TEXT_MAX = 500; // Stripe caps a metadata value at 500 characters.
@@ -18,8 +19,6 @@ const CHECKOUT = {
     cancel: '/reserver/',
     refund: 'Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier.'
 };
-
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.trim().length <= max ? v.trim() : null;
 
@@ -33,10 +32,9 @@ function validate(b) {
     const challenges = Array.isArray(s.challenges) && s.challenges.length > 0 && s.challenges.every((c) => CHALLENGES.includes(c)) ? s.challenges : null;
     const situation = text(s.situation, TEXT_MAX);
     const focus = s.focus === '' || s.focus == null ? '' : text(s.focus, TEXT_MAX);
-    const name = text(b.name, 100);
-    const email = text(b.email, 254);
-    if (!business || !size || !challenges || !situation || focus === null || !name || !email || !EMAIL.test(email)) return null;
-    return { business, size, challenges, situation, focus, name, email };
+    const contact = validateContact(b.contact);
+    if (!business || !size || !challenges || !situation || focus === null || !contact) return null;
+    return { business, size, challenges, situation, focus, ...contact };
 }
 
 function sessionParams(a, origin) {
@@ -56,7 +54,7 @@ function sessionParams(a, origin) {
         'line_items[0][price_data][tax_behavior]': 'exclusive',
         'line_items[0][price_data][product_data][name]': l.product
     });
-    const meta = { name: a.name, size: a.size, challenges: a.challenges.join(', '), business: a.business, situation: a.situation, focus: a.focus };
+    const meta = { name: a.name, company: a.company, phone: a.phone, channel: a.channel, size: a.size, challenges: a.challenges.join(', '), business: a.business, situation: a.situation, focus: a.focus };
     for (const [k, v] of Object.entries(meta)) {
         p.set(`metadata[${k}]`, v);
         p.set(`payment_intent_data[metadata][${k}]`, v);

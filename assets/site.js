@@ -64,7 +64,7 @@ var turnstileToken = (function () {
     var draft = form.querySelector('#draft');
     var card = form.querySelector('.card');
     var send = form.querySelector('[data-chat="send"]');
-    var state = { messages: [], summary: null };
+    var state = { contact: {}, messages: [], summary: null };
     var TEXT = {
         chat: 'L’assistant n’a pas répondu. Réessayez dans un instant.',
         verification: 'La vérification a échoué. Rechargez la page.',
@@ -76,6 +76,19 @@ var turnstileToken = (function () {
         try { sessionStorage.setItem(key, JSON.stringify(state)); } catch (err) {}
     }
 
+    var CONTACT = ['name', 'company', 'email', 'phone', 'channel'];
+    function readContact() {
+        var data = new FormData(form);
+        CONTACT.forEach(function (k) { state.contact[k] = data.get(k) || ''; });
+        save();
+    }
+    function restoreContact() {
+        var c = state.contact || {};
+        ['name', 'company', 'email', 'phone'].forEach(function (k) { if (form.elements[k]) form.elements[k].value = c[k] || ''; });
+        form.querySelectorAll('input[name="channel"]').forEach(function (r) { r.checked = r.value === c.channel; });
+    }
+    form.addEventListener('input', readContact);
+
     // Reads the label of a summary value from the page's own vocabulary.
     var LABELS = {
         size: { solo: 'Moi seulement', '2-10': '2 à 10 personnes', '11-50': '11 à 50 personnes', '51-200': '51 à 200 personnes', '200+': 'Plus de 200 personnes' },
@@ -84,7 +97,8 @@ var turnstileToken = (function () {
 
     function summarize() {
         var s = state.summary || {};
-        var fill = { business: s.business, size: LABELS.size[s.size] || '', challenges: (s.challenges || []).map(function (c) { return LABELS.challenges[c] || c; }).join('\n'), situation: s.situation, focus: s.focus };
+        var c = state.contact || {};
+        var fill = { contact: [c.name, c.company, c.email, c.phone, c.channel === 'sms' ? 'Par texto' : c.channel === 'email' ? 'Par courriel' : ''].filter(Boolean).join('\n'), business: s.business, size: LABELS.size[s.size] || '', challenges: (s.challenges || []).map(function (c) { return LABELS.challenges[c] || c; }).join('\n'), situation: s.situation, focus: s.focus };
         form.querySelectorAll('[data-summary]').forEach(function (dd) {
             var v = fill[dd.dataset.summary] || '';
             dd.textContent = v;
@@ -123,6 +137,8 @@ var turnstileToken = (function () {
         if (done) { summarize(); offer([]); }
     }
 
+    var CHAT = 2;
+
     function fail(step, text) {
         var el = step.querySelector('.form-error');
         el.textContent = text || el.textContent;
@@ -131,8 +147,8 @@ var turnstileToken = (function () {
 
     function ask(text) {
         text = (text || '').trim();
-        if (!text) { fail(steps[1], TEXT.empty); return; }
-        var step = steps[1];
+        if (!text) { fail(steps[CHAT], TEXT.empty); return; }
+        var step = steps[CHAT];
         step.querySelector('.form-error').hidden = true;
         state.messages.push({ role: 'user', content: text });
         save();
@@ -145,7 +161,7 @@ var turnstileToken = (function () {
             return fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
-                body: JSON.stringify({ messages: state.messages })
+                body: JSON.stringify({ contact: state.contact, messages: state.messages })
             });
         }).then(function (res) {
             return res.json().then(function (body) {
@@ -173,12 +189,20 @@ var turnstileToken = (function () {
         for (var i = 0; i < fields.length; i++) {
             if (!fields[i].reportValidity()) return false;
         }
+        var group = step.querySelector('.choices[data-required]');
+        if (group && !group.querySelector('input:checked')) {
+            var first = group.querySelector('input');
+            first.setCustomValidity(group.dataset.required);
+            first.reportValidity();
+            first.setCustomValidity('');
+            return false;
+        }
         return true;
     }
 
     function show(n) {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
-        if (n === 1) renderChat();
+        if (n === CHAT) renderChat();
         if (n === steps.length - 1) summarize();
         var error = steps[n].querySelector('.form-error');
         if (error) error.hidden = true;
@@ -193,7 +217,7 @@ var turnstileToken = (function () {
         if (btn.dataset.chat === 'refine') { state.summary = null; save(); card.hidden = true; composer.hidden = false; draft.focus(); return; }
         var current = steps.indexOf(btn.closest('.step'));
         var next = btn.dataset.go === 'next' ? current + 1 : current - 1;
-        if (next > current && (!valid(steps[current]) || (current === 1 && !state.summary))) return;
+        if (next > current && (!valid(steps[current]) || (current === CHAT && !state.summary))) return;
         show(next);
     });
 
@@ -204,7 +228,7 @@ var turnstileToken = (function () {
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         var last = steps[steps.length - 1];
-        if (!valid(last) || !state.summary) return;
+        if (!state.summary) return;
         var submit = form.querySelector('[type="submit"]');
         submit.disabled = true;
         last.querySelector('.form-error').hidden = true;
@@ -212,7 +236,7 @@ var turnstileToken = (function () {
             return fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
-                body: JSON.stringify({ summary: state.summary, name: form.elements.name.value, email: form.elements.email.value })
+                body: JSON.stringify({ summary: state.summary, contact: state.contact })
             });
         }).then(function (res) {
             return res.json().then(function (body) {
@@ -226,5 +250,6 @@ var turnstileToken = (function () {
         });
     });
 
+    restoreContact();
     show(0);
 })();

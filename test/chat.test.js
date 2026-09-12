@@ -19,11 +19,12 @@ function call(body, opts = {}) {
         }
         throw new Error('unexpected fetch ' + u);
     };
-    const request = new Request('https://kevinfilteau.com/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': 'tok', 'CF-Connecting-IP': '203.0.113.9' }, body: typeof body === 'string' ? body : JSON.stringify(body) });
+    const request = new Request('https://kevinfilteau.com/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': 'tok', 'CF-Connecting-IP': '203.0.113.9' }, body: typeof body === 'string' ? body : JSON.stringify(body.messages && !('contact' in body) ? { contact, ...body } : body) });
     return onRequestPost({ request, env: opts.env || env }).then(async (res) => ({ res, body: await res.json(), calls }));
 }
 
 const turn = [{ role: 'user', content: 'On vend des pneus à des garages.' }];
+const contact = { name: 'Anne', company: 'Pneus inc.', email: 'anne@example.com', phone: '418-555-0199', channel: 'sms' };
 
 test('answers the visitor with the reply, the choices and the done flag', async () => {
     const { res, body, calls } = await call({ messages: turn });
@@ -75,6 +76,15 @@ for (const [name, messages] of Object.entries({
         assert.equal(calls.anthropic.length, 0);
     });
 }
+
+test('rejects a chat without a valid contact, without calling the model', async () => {
+    for (const bad of [{ messages: turn, contact: null }, { messages: turn, contact: { ...contact, phone: '12' } }, { messages: turn, contact: { ...contact, channel: 'fax' } }]) {
+        const { res, body, calls } = await call(bad);
+        assert.equal(res.status, 400);
+        assert.deepEqual(body, { error: 'invalid' });
+        assert.equal(calls.anthropic.length, 0);
+    }
+});
 
 test('rejects a body that is not JSON', async () => {
     const { res, body } = await call('nope');

@@ -19,19 +19,19 @@
     <meta property="og:locale" content="fr_CA">
     <meta property="og:image" content="https://kevinfilteau.com/og-image.png">
 
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12c">
-    <script src="/assets/site.js?v=2026-09-12c" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12d">
+    <script src="/assets/site.js?v=2026-09-12d" defer></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12c" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12d" tabindex="-1"></object>
     </div>
 
     <main>
         <form id="book" class="book" novalidate>
             <section class="step">
-                <p class="step-count">Étape 1 de 3</p>
+                <p class="step-count">Étape 1 de 4</p>
                 <h1 tabindex="-1">Réserver une heure</h1>
                 <h2>Ce que vous obtenez</h2>
                 <ul>
@@ -41,14 +41,48 @@
                 </ul>
                 <p class="price">250&nbsp;$ CA<small>plus taxes</small></p>
                 <p class="guarantee">Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier. Sans question.</p>
-                <p>Ensuite, un assistant automatisé vous pose quelques questions, environ cinq minutes. Elles me donnent ce qu’il faut pour que l’heure compte.</p>
+                <p>Ensuite, vos coordonnées, puis un assistant automatisé vous pose quelques questions, environ cinq minutes. Elles me donnent ce qu’il faut pour que l’heure compte.</p>
                 <div class="actions">
                     <button type="button" class="cta" data-go="next">Commencer</button>
                 </div>
             </section>
 
             <section class="step" hidden>
-                <p class="step-count">Étape 2 de 3</p>
+                <p class="step-count">Étape 2 de 4</p>
+                <h2 tabindex="-1">Vos coordonnées</h2>
+                <div class="field">
+                    <label for="name">Votre nom</label>
+                    <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+                </div>
+                <div class="field">
+                    <label for="company">Votre entreprise</label>
+                    <input id="company" name="company" type="text" autocomplete="organization" maxlength="200" required>
+                </div>
+                <div class="field">
+                    <label for="email">Votre courriel</label>
+                    <span class="hint">Pour le reçu et le résumé.</span>
+                    <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                </div>
+                <div class="field">
+                    <label for="phone">Votre cellulaire</label>
+                    <span class="hint">Pour les textos seulement, jamais d’appel.</span>
+                    <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" pattern="\+?1?[\s.-]*\(?[0-9]{3}\)?[\s.-]*[0-9]{3}[\s.-]*[0-9]{4}" placeholder="418 555-0199" required>
+                </div>
+                <div class="field">
+                    <span class="legend" id="channel-label">Comment préférez-vous qu’on vous joigne?</span>
+                    <div class="choices" role="radiogroup" aria-labelledby="channel-label" data-required="Choisissez un moyen.">
+                        <label><input type="radio" name="channel" value="sms" required> Par texto</label>
+                        <label><input type="radio" name="channel" value="email"> Par courriel</label>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="button" class="cta secondary" data-go="back">Retour</button>
+                    <button type="button" class="cta" data-go="next">Suivant</button>
+                </div>
+            </section>
+
+            <section class="step" hidden>
+                <p class="step-count">Étape 3 de 4</p>
                 <h2 tabindex="-1">Parlons de votre situation</h2>
                 <p class="hint">Un assistant automatisé pose les questions. Kevin lit vos réponses avant la rencontre.</p>
                 <div class="chat" role="log" aria-live="polite" data-intro="Bonjour. Je suis l’assistant automatisé de Kevin. Quelques questions pour préparer votre heure avec lui. D’abord, que fait votre entreprise?"></div>
@@ -81,26 +115,18 @@
             </section>
 
             <section class="step" hidden>
-                <p class="step-count">Étape 3 de 3</p>
+                <p class="step-count">Étape 4 de 4</p>
                 <h2 tabindex="-1">Vérifier et payer</h2>
                 <dl class="summary">
+                    <dt>Vous</dt><dd data-summary="contact"></dd>
                     <dt>Votre entreprise</dt><dd data-summary="business"></dd>
                     <dt>Taille</dt><dd data-summary="size"></dd>
                     <dt>Votre défi</dt><dd data-summary="challenges"></dd>
                     <dt>La situation</dt><dd data-summary="situation"></dd>
                     <dt>L’heure devrait porter sur</dt><dd data-summary="focus"></dd>
                 </dl>
-                <div class="field">
-                    <label for="name">Votre nom</label>
-                    <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
-                </div>
-                <div class="field">
-                    <label for="email">Votre courriel</label>
-                    <span class="hint">Où j’envoie le reçu, l’heure de la rencontre et le résumé.</span>
-                    <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
-                </div>
                 <p class="guarantee">250&nbsp;$ CA plus taxes, remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier.</p>
-                <p>Stripe prend le paiement. Je vous écris dans un jour ouvrable pour fixer l’heure.</p>
+                <p>Stripe prend le paiement. Je vous joins dans un jour ouvrable, par texto ou par courriel selon votre choix, pour fixer l’heure.</p>
                 <p class="form-error" role="alert" hidden>La page de paiement n’a pas pu s’ouvrir. Réessayez dans un instant ou écrivez-moi à info@kevinfilteau.com.</p>
                 <div class="actions">
                     <button type="button" class="cta secondary" data-go="back">Retour</button>

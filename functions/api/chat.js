@@ -5,6 +5,7 @@
 // TURNSTILE_SECRET_KEY as encrypted variables on the Pages project.
 import Anthropic from '@anthropic-ai/sdk';
 import { human } from '../../lib/turnstile.js';
+import { validateContact } from '../../lib/contact.js';
 
 export const SIZES = ['solo', '2-10', '11-50', '51-200', '200+'];
 export const CHALLENGES = ['fit', 'stuck', 'integration', 'build-buy', 'choice', 'cloud', 'no-tech-lead', 'other'];
@@ -21,7 +22,7 @@ Règles:
 - Adapte la question suivante à ce qui vient d’être dit. Cherche dans l’ordre: ce que fait l’entreprise, sa taille, le problème concret (quoi, depuis quand, qui le porte, ce qui a été essayé), ce qui est en jeu.
 - Quand une question a des réponses fermées évidentes, propose jusqu’à quatre choix courts dans "choices". Sinon "choices" est vide.
 - Reste sur la situation du visiteur. Si on te demande autre chose, réponds en une phrase que c’est pour Kevin pendant l’heure, puis reviens à ta question.
-- Ne demande jamais de renseignements personnels: nom, courriel, téléphone, adresse. Le formulaire s’en charge après toi.
+- Ne demande jamais de renseignements personnels: nom, courriel, téléphone, adresse. Le formulaire les a déjà.
 - Termine dès que tu as l’entreprise, la taille, le problème concret et ce qui est en jeu, en général après trois à cinq réponses. Termine aussi si le visiteur le demande.
 - Pour terminer: "done" vrai, "reply" remercie en une phrase et dit que Kevin lira ce résumé, "choices" vide, et "summary" complet.
 - Tant que tu n’as pas terminé: "done" faux et "summary" avec des chaines vides et une liste vide.
@@ -60,7 +61,9 @@ const FORMAT = {
 const json = (body, status) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 // The transcript as the browser keeps it: user and assistant alternate, user first and last.
+// The contact is collected before the chat; without it the model is not called.
 function validate(b) {
+    if (!validateContact(b && b.contact)) return null;
     const m = b && Array.isArray(b.messages) ? b.messages : null;
     if (!m || m.length === 0 || m.length % 2 === 0 || m.length > MAX_TURNS * 2 - 1) return null;
     const out = [];

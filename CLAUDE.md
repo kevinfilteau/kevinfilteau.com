@@ -26,19 +26,22 @@ The `prepaid-code/` pages keep their own article layout and inline CSS; they do 
 
 ## Booking flow
 
-The offer is a paid one-hour consultation. `reserver/` holds a three-step form driven by `assets/site.js`
+The offer is a paid one-hour consultation. `reserver/` holds a four-step form driven by `assets/site.js`
 (one `.step` visible at a time, state in `sessionStorage`):
 
 1. What you get, price, guarantee.
-2. A chat with an automated assistant. The page sends the whole transcript to `functions/api/chat.js` on
+2. Contact: name, company, email, mobile (texts only) and the preferred channel, SMS or email.
+   `lib/contact.js` validates it; both Functions refuse a call without a valid contact, so the chat
+   cannot be reached without it.
+3. A chat with an automated assistant. The page sends the whole transcript to `functions/api/chat.js` on
    every turn; the Function calls Claude Opus 5 through the Anthropic SDK with a frozen French system
    prompt and a JSON output schema (`reply`, `choices`, `done`, `summary`). Server-side refusal fallbacks
    are on (`fallbacks: "default"`). The visitor gets at most 8 turns; from the 6th the model is told to
    conclude. When `done`, the summary (business, size, challenges, situation, focus) is shown on a card
    the visitor accepts or refines. No fallback form: if the model is down, the visitor sees an error.
-3. Review, name, email, pay. The summary and the contact go to `functions/api/checkout.js`, which creates
-   a Stripe Checkout Session over the REST API with the summary as metadata on the session and on the
-   payment, then returns the Checkout URL. Stripe sends the visitor back to `reserver/merci/` (`noindex`,
+4. Review and pay. The summary and the contact go to `functions/api/checkout.js`, which creates a Stripe
+   Checkout Session over the REST API with the summary and the contact as metadata on the session and on
+   the payment, then returns the Checkout URL. Stripe sends the visitor back to `reserver/merci/` (`noindex`,
    not in the sitemap).
 
 Both Functions cost money to call, so each requires a Cloudflare Turnstile token

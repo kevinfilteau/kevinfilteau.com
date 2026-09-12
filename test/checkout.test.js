@@ -4,7 +4,7 @@ import { onRequestPost } from '../functions/api/checkout.js';
 
 const answers = {
     summary: { business: 'We sell tires.', size: '11-50', challenges: ['stuck', 'integration'], situation: 'A project is late.', focus: 'Unblock it.' },
-    name: 'Ann', email: 'ann@example.com'
+    contact: { name: 'Ann', company: 'Tires inc.', email: 'ann@example.com', phone: '418-555-0199', channel: 'sms' }
 };
 
 function call(body, fetchImpl, human = true) {
@@ -50,6 +50,9 @@ test('puts every answer in the metadata of the session and of the payment', asyn
         assert.equal(p.get(`${scope}[situation]`), 'A project is late.');
         assert.equal(p.get(`${scope}[focus]`), 'Unblock it.');
         assert.equal(p.get(`${scope}[name]`), 'Ann');
+        assert.equal(p.get(`${scope}[company]`), 'Tires inc.');
+        assert.equal(p.get(`${scope}[phone]`), '+14185550199');
+        assert.equal(p.get(`${scope}[channel]`), 'sms');
     }
 });
 
@@ -61,8 +64,11 @@ test('rejects a body that is not JSON', async () => {
 });
 
 for (const [name, patch] of Object.entries({
-    'missing email': { email: '' },
-    'malformed email': { email: 'ann' },
+    'no contact': { contact: null },
+    'missing email': { contact: { ...answers.contact, email: '' } },
+    'malformed email': { contact: { ...answers.contact, email: 'ann' } },
+    'bad phone': { contact: { ...answers.contact, phone: '123' } },
+    'unknown channel': { contact: { ...answers.contact, channel: 'fax' } },
     'no summary': { summary: null },
     'unknown size': { summary: { ...answers.summary, size: 'huge' } },
     'unknown challenge': { summary: { ...answers.summary, challenges: ['stuck', 'aliens'] } },
@@ -70,7 +76,7 @@ for (const [name, patch] of Object.entries({
     'business too long': { summary: { ...answers.summary, business: 'x'.repeat(501) } },
     'situation too long': { summary: { ...answers.summary, situation: 'x'.repeat(501) } },
     'focus too long': { summary: { ...answers.summary, focus: 'x'.repeat(501) } },
-    'name too long': { name: 'x'.repeat(101) },
+    'name too long': { contact: { ...answers.contact, name: 'x'.repeat(101) } },
     'no challenge picked': { summary: { ...answers.summary, challenges: [] } },
     'challenges not a list': { summary: { ...answers.summary, challenges: 'stuck' } },
 })) {
