@@ -21,6 +21,7 @@
 
     <link rel="stylesheet" href="/assets/site.css?v=2026-09-12">
     <script src="/assets/site.js?v=2026-09-12" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
@@ -30,7 +31,7 @@
     <main>
         <form id="book" class="book" novalidate>
             <section class="step">
-                <p class="step-count">Étape 1 de 4</p>
+                <p class="step-count">Étape 1 de 3</p>
                 <h1 tabindex="-1">Réserver une heure</h1>
                 <h2>Ce que vous obtenez</h2>
                 <ul>
@@ -40,76 +41,58 @@
                 </ul>
                 <p class="price">250&nbsp;$ CA<small>plus taxes</small></p>
                 <p class="guarantee">Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier. Sans question.</p>
-                <p>Les trois prochaines étapes prennent environ cinq minutes. Elles me donnent ce qu’il faut pour que l’heure compte.</p>
+                <p>Ensuite, un assistant automatisé vous pose quelques questions, environ cinq minutes. Elles me donnent ce qu’il faut pour que l’heure compte.</p>
                 <div class="actions">
                     <button type="button" class="cta" data-go="next">Commencer</button>
                 </div>
             </section>
 
             <section class="step" hidden>
-                <p class="step-count">Étape 2 de 4</p>
-                <h2 tabindex="-1">Votre entreprise</h2>
-                <div class="field" data-record="business">
-                    <label for="business">Décrivez votre entreprise</label>
-                    <span class="hint">Ce que vous faites, pour qui, et comment le travail se fait. Écrivez, ou parlez et je mets vos mots en texte.</span>
-                    <textarea id="business" name="business" maxlength="500" required></textarea>
-                    <div class="record" hidden>
-                        <button type="button" class="cta secondary record-toggle" data-start="Parler plutôt" data-stop="Arrêter" aria-pressed="false">Parler plutôt</button>
-                        <span class="record-status" role="status" aria-live="polite"></span>
+                <p class="step-count">Étape 2 de 3</p>
+                <h2 tabindex="-1">Parlons de votre situation</h2>
+                <p class="hint">Un assistant automatisé pose les questions. Kevin lit vos réponses avant la rencontre.</p>
+                <div class="chat" role="log" aria-live="polite" data-intro="Bonjour. Je suis l’assistant automatisé de Kevin. Quelques questions pour préparer votre heure avec lui. D’abord, que fait votre entreprise?"></div>
+                <div class="chips" aria-label="Réponses rapides"></div>
+                <div class="composer" data-record="draft">
+                    <label for="draft" class="visually-hidden">Votre réponse</label>
+                    <textarea id="draft" rows="2" maxlength="500" placeholder="Votre réponse"></textarea>
+                    <div class="composer-actions">
+                        <div class="record" hidden>
+                            <button type="button" class="cta secondary record-toggle" data-start="Parler" data-stop="Arrêter" aria-pressed="false">Parler</button>
+                            <span class="record-status" role="status" aria-live="polite"></span>
+                        </div>
+                        <button type="button" class="cta" data-chat="send">Envoyer</button>
                     </div>
                 </div>
-                <div class="field">
-                    <span class="legend" id="size-label">Taille de votre entreprise</span>
-                    <div class="choices" role="radiogroup" aria-labelledby="size-label" data-required="Choisissez une taille.">
-                        <label><input type="radio" name="size" value="solo"> Moi seulement</label>
-                        <label><input type="radio" name="size" value="2-10"> 2 à 10 personnes</label>
-                        <label><input type="radio" name="size" value="11-50"> 11 à 50 personnes</label>
-                        <label><input type="radio" name="size" value="51-200"> 51 à 200 personnes</label>
-                        <label><input type="radio" name="size" value="200+"> Plus de 200 personnes</label>
+                <div class="card" hidden>
+                    <h3>Ce que l’assistant a compris</h3>
+                    <dl class="summary">
+                        <dt>Votre entreprise</dt><dd data-summary="business"></dd>
+                        <dt>Taille</dt><dd data-summary="size"></dd>
+                        <dt>Votre défi</dt><dd data-summary="challenges"></dd>
+                        <dt>La situation</dt><dd data-summary="situation"></dd>
+                        <dt>L’heure devrait porter sur</dt><dd data-summary="focus"></dd>
+                    </dl>
+                    <div class="actions">
+                        <button type="button" class="cta secondary" data-chat="refine">Préciser</button>
+                        <button type="button" class="cta" data-go="next">C’est juste</button>
                     </div>
                 </div>
+                <p class="form-error" role="alert" hidden></p>
                 <div class="actions">
                     <button type="button" class="cta secondary" data-go="back">Retour</button>
-                    <button type="button" class="cta" data-go="next">Suivant</button>
                 </div>
             </section>
 
             <section class="step" hidden>
-                <p class="step-count">Étape 3 de 4</p>
-                <h2 tabindex="-1">Votre défi</h2>
-                <div class="field">
-                    <span class="legend" id="challenges-label">Qu’est-ce qui vous bloque?</span>
-                    <span class="hint">Cochez tout ce qui s’applique. On les passe en revue ensemble.</span>
-                    <div class="choices" role="group" aria-labelledby="challenges-label" data-required="Cochez au moins un choix.">
-                        <label><input type="checkbox" name="challenges" value="fit"> Notre logiciel ne suit plus notre façon de travailler</label>
-                        <label><input type="checkbox" name="challenges" value="stuck"> Un projet est bloqué ou en retard</label>
-                        <label><input type="checkbox" name="challenges" value="integration"> Nos systèmes ne se parlent pas</label>
-                        <label><input type="checkbox" name="challenges" value="build-buy"> On hésite entre bâtir et acheter</label>
-                        <label><input type="checkbox" name="challenges" value="choice"> On doit choisir une technologie ou un fournisseur</label>
-                        <label><input type="checkbox" name="challenges" value="cloud"> Les couts, la sécurité ou la fiabilité du nuage nous inquiètent</label>
-                        <label><input type="checkbox" name="challenges" value="no-tech-lead"> On n’a personne de technique avec qui y réfléchir</label>
-                        <label><input type="checkbox" name="challenges" value="other"> Autre chose</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="other">Autre chose que je devrais savoir?</label>
-                    <span class="hint">Quelques lignes suffisent. Ce qui s’est passé, ce que vous avez essayé, ce qui est en jeu.</span>
-                    <textarea id="other" name="other" maxlength="500"></textarea>
-                </div>
-                <div class="actions">
-                    <button type="button" class="cta secondary" data-go="back">Retour</button>
-                    <button type="button" class="cta" data-go="next">Suivant</button>
-                </div>
-            </section>
-
-            <section class="step" hidden>
-                <p class="step-count">Étape 4 de 4</p>
+                <p class="step-count">Étape 3 de 3</p>
                 <h2 tabindex="-1">Vérifier et payer</h2>
                 <dl class="summary">
                     <dt>Votre entreprise</dt><dd data-summary="business"></dd>
                     <dt>Taille</dt><dd data-summary="size"></dd>
                     <dt>Votre défi</dt><dd data-summary="challenges"></dd>
-                    <dt>Autre chose</dt><dd data-summary="other"></dd>
+                    <dt>La situation</dt><dd data-summary="situation"></dd>
+                    <dt>L’heure devrait porter sur</dt><dd data-summary="focus"></dd>
                 </dl>
                 <div class="field">
                     <label for="name">Votre nom</label>
@@ -128,6 +111,9 @@
                     <button type="submit" class="cta">Payer et réserver</button>
                 </div>
             </section>
+
+            <!-- Turnstile widget for kevinfilteau.com; the secret is TURNSTILE_SECRET_KEY on the Pages project. -->
+            <div class="turnstile" data-sitekey="0x4AAAAAAExdbahkJHvtso75"></div>
         </form>
 
         <footer class="contact">

@@ -2,12 +2,13 @@
 // The answers travel as metadata on the session and on the payment, so they show
 // up on the payment in the Stripe dashboard. Nothing is stored here.
 // Calls the Stripe REST API directly: no dependency, no build step.
-// Needs STRIPE_SECRET_KEY as an encrypted variable on the Pages project
-// (and in .dev.vars for `wrangler pages dev`).
+// Needs STRIPE_SECRET_KEY and TURNSTILE_SECRET_KEY as encrypted variables on the
+// Pages project (and in .dev.vars for `wrangler pages dev`).
+
+import { human } from '../../lib/turnstile.js';
+import { SIZES, CHALLENGES } from './chat.js';
 
 const PRICE = { currency: 'cad', unit_amount: 25000 };
-const SIZES = ['solo', '2-10', '11-50', '51-200', '200+'];
-const CHALLENGES = ['fit', 'stuck', 'integration', 'build-buy', 'choice', 'cloud', 'no-tech-lead', 'other'];
 const TEXT_MAX = 500; // Stripe caps a metadata value at 500 characters.
 
 const CHECKOUT = {
@@ -23,16 +24,19 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.trim().length <= max ? v.trim() : null;
 
 // Returns the cleaned answers, or null when anything is missing or out of range.
+// The summary is what the assistant produced at the end of the chat.
 function validate(b) {
-    if (!b || typeof b !== 'object') return null;
-    const business = text(b.business, TEXT_MAX);
-    const size = SIZES.includes(b.size) ? b.size : null;
-    const challenges = Array.isArray(b.challenges) && b.challenges.length > 0 && b.challenges.every((c) => CHALLENGES.includes(c)) ? b.challenges : null;
-    const other = b.other === '' || b.other == null ? '' : text(b.other, TEXT_MAX);
+    const s = b && typeof b === 'object' && b.summary && typeof b.summary === 'object' ? b.summary : null;
+    if (!s) return null;
+    const business = text(s.business, TEXT_MAX);
+    const size = SIZES.includes(s.size) ? s.size : null;
+    const challenges = Array.isArray(s.challenges) && s.challenges.length > 0 && s.challenges.every((c) => CHALLENGES.includes(c)) ? s.challenges : null;
+    const situation = text(s.situation, TEXT_MAX);
+    const focus = s.focus === '' || s.focus == null ? '' : text(s.focus, TEXT_MAX);
     const name = text(b.name, 100);
     const email = text(b.email, 254);
-    if (!business || !size || !challenges || other === null || !name || !email || !EMAIL.test(email)) return null;
-    return { business, size, challenges, other, name, email };
+    if (!business || !size || !challenges || !situation || focus === null || !name || !email || !EMAIL.test(email)) return null;
+    return { business, size, challenges, situation, focus, name, email };
 }
 
 function sessionParams(a, origin) {
@@ -52,7 +56,7 @@ function sessionParams(a, origin) {
         'line_items[0][price_data][tax_behavior]': 'exclusive',
         'line_items[0][price_data][product_data][name]': l.product
     });
-    const meta = { name: a.name, size: a.size, challenges: a.challenges.join(', '), business: a.business, other: a.other };
+    const meta = { name: a.name, size: a.size, challenges: a.challenges.join(', '), business: a.business, situation: a.situation, focus: a.focus };
     for (const [k, v] of Object.entries(meta)) {
         p.set(`metadata[${k}]`, v);
         p.set(`payment_intent_data[metadata][${k}]`, v);
@@ -66,6 +70,7 @@ export async function onRequestPost({ request, env }) {
     let answers = null;
     try { answers = validate(await request.json()); } catch (err) { answers = null; }
     if (!answers) return json({ error: 'invalid' }, 400);
+    if (!(await human(request, env))) return json({ error: 'verification' }, 403);
 
     try {
         const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {

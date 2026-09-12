@@ -3,20 +3,21 @@ import assert from 'node:assert/strict';
 import { onRequestPost } from '../functions/api/checkout.js';
 
 const answers = {
-    business: 'We sell tires.', size: '11-50',
-    challenges: ['stuck', 'integration'], other: '', name: 'Ann', email: 'ann@example.com'
+    summary: { business: 'We sell tires.', size: '11-50', challenges: ['stuck', 'integration'], situation: 'A project is late.', focus: 'Unblock it.' },
+    name: 'Ann', email: 'ann@example.com'
 };
 
-function call(body, fetchImpl) {
+function call(body, fetchImpl, human = true) {
     const calls = [];
-    globalThis.fetch = fetchImpl || (async (url, init) => {
+    const stripe = fetchImpl || (async (url, init) => {
         calls.push({ url, params: new URLSearchParams(init.body), headers: init.headers });
         return new Response(JSON.stringify({ url: 'https://checkout.stripe.com/c/pay/cs_test' }), { status: 200 });
     });
+    globalThis.fetch = async (url, init) => String(url).includes('turnstile') ? new Response(JSON.stringify({ success: human }), { status: 200 }) : stripe(url, init);
     const request = new Request('https://kevinfilteau.com/api/checkout', {
-        method: 'POST', body: typeof body === 'string' ? body : JSON.stringify(body)
+        method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: typeof body === 'string' ? body : JSON.stringify(body)
     });
-    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x' } }).then(async (res) => ({ res, body: await res.json(), calls }));
+    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x', TURNSTILE_SECRET_KEY: 'ts' } }).then(async (res) => ({ res, body: await res.json(), calls }));
 }
 
 test('creates a Stripe Checkout session and returns its URL', async () => {
@@ -46,6 +47,8 @@ test('puts every answer in the metadata of the session and of the payment', asyn
         assert.equal(p.get(`${scope}[business]`), 'We sell tires.');
         assert.equal(p.get(`${scope}[size]`), '11-50');
         assert.equal(p.get(`${scope}[challenges]`), 'stuck, integration');
+        assert.equal(p.get(`${scope}[situation]`), 'A project is late.');
+        assert.equal(p.get(`${scope}[focus]`), 'Unblock it.');
         assert.equal(p.get(`${scope}[name]`), 'Ann');
     }
 });
@@ -60,14 +63,16 @@ test('rejects a body that is not JSON', async () => {
 for (const [name, patch] of Object.entries({
     'missing email': { email: '' },
     'malformed email': { email: 'ann' },
-    'unknown size': { size: 'huge' },
-    'unknown challenge': { challenges: ['stuck', 'aliens'] },
-    'empty business': { business: '  ' },
-    'business too long': { business: 'x'.repeat(501) },
-    'other too long': { other: 'x'.repeat(501) },
+    'no summary': { summary: null },
+    'unknown size': { summary: { ...answers.summary, size: 'huge' } },
+    'unknown challenge': { summary: { ...answers.summary, challenges: ['stuck', 'aliens'] } },
+    'empty business': { summary: { ...answers.summary, business: '  ' } },
+    'business too long': { summary: { ...answers.summary, business: 'x'.repeat(501) } },
+    'situation too long': { summary: { ...answers.summary, situation: 'x'.repeat(501) } },
+    'focus too long': { summary: { ...answers.summary, focus: 'x'.repeat(501) } },
     'name too long': { name: 'x'.repeat(101) },
-    'no challenge picked': { challenges: [] },
-    'challenges not a list': { challenges: 'stuck' },
+    'no challenge picked': { summary: { ...answers.summary, challenges: [] } },
+    'challenges not a list': { summary: { ...answers.summary, challenges: 'stuck' } },
 })) {
     test(`rejects ${name} without calling Stripe`, async () => {
         const { res, body, calls } = await call({ ...answers, ...patch });
@@ -76,6 +81,13 @@ for (const [name, patch] of Object.entries({
         assert.equal(calls.length, 0);
     });
 }
+
+test('refuses a visitor Turnstile does not confirm, without calling Stripe', async () => {
+    const { res, body, calls } = await call(answers, null, false);
+    assert.equal(res.status, 403);
+    assert.deepEqual(body, { error: 'verification' });
+    assert.equal(calls.length, 0);
+});
 
 test('reports a Stripe failure without exposing details or personal data', async () => {
     const logged = [];

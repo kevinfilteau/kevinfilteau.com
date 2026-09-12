@@ -22,106 +22,197 @@
     }
 })();
 
-/* The booking form: one step at a time, answers kept in sessionStorage so a
-   refresh or a cancelled payment does not empty it, then Stripe Checkout. */
+/* Turnstile: one widget per page, one token per call to the Functions.
+   A token is single-use, so the widget is reset after each call. */
+var turnstileToken = (function () {
+    var box = document.querySelector('.turnstile');
+    if (!box) return null;
+    var widget = null, token = null, waiters = [];
+
+    function render() {
+        if (!window.turnstile) { setTimeout(render, 100); return; }
+        widget = turnstile.render(box, {
+            sitekey: box.dataset.sitekey,
+            appearance: 'interaction-only',
+            callback: function (t) { token = t; waiters.splice(0).forEach(function (w) { w(t); }); },
+            'expired-callback': function () { token = null; turnstile.reset(widget); },
+            'error-callback': function () { token = null; }
+        });
+    }
+    render();
+
+    // Resolves with a fresh token, then the caller runs and the widget is reset.
+    return function (run) {
+        var take = token ? Promise.resolve(token) : new Promise(function (resolve) { waiters.push(resolve); });
+        token = null;
+        return take.then(run).finally(function () { if (widget !== null) turnstile.reset(widget); });
+    };
+})();
+
+/* The booking form: a fixed first step, the assistant chat, then review and pay.
+   The transcript and the summary live in sessionStorage so a refresh or a
+   cancelled payment does not empty them. */
 (function () {
     var form = document.getElementById('book');
     if (!form) return;
 
     var steps = Array.prototype.slice.call(form.querySelectorAll('.step'));
-    var error = form.querySelector('.form-error');
     var key = 'book';
+    var chat = form.querySelector('.chat');
+    var chips = form.querySelector('.chips');
+    var composer = form.querySelector('.composer');
+    var draft = form.querySelector('#draft');
+    var card = form.querySelector('.card');
+    var send = form.querySelector('[data-chat="send"]');
+    var state = { messages: [], summary: null };
+    var TEXT = {
+        chat: 'L’assistant n’a pas répondu. Réessayez dans un instant.',
+        verification: 'La vérification a échoué. Rechargez la page.',
+        empty: 'Écrivez une réponse d’abord.'
+    };
 
-    function answers() {
-        var data = new FormData(form);
-        return {
-            business: data.get('business') || '',
-            size: data.get('size') || '',
-            challenges: data.getAll('challenges'),
-            other: data.get('other') || '',
-            name: data.get('name') || '',
-            email: data.get('email') || ''
-        };
-    }
-
+    try { state = JSON.parse(sessionStorage.getItem(key)) || state; } catch (err) {}
     function save() {
-        try { sessionStorage.setItem(key, JSON.stringify(answers())); } catch (err) {}
+        try { sessionStorage.setItem(key, JSON.stringify(state)); } catch (err) {}
     }
 
-    function restore() {
-        var saved;
-        try { saved = JSON.parse(sessionStorage.getItem(key)); } catch (err) {}
-        if (!saved) return;
-        ['business', 'other', 'name', 'email'].forEach(function (n) {
-            if (form.elements[n]) form.elements[n].value = saved[n] || '';
-        });
-        form.querySelectorAll('input[name="size"]').forEach(function (r) { r.checked = r.value === saved.size; });
-        form.querySelectorAll('input[name="challenges"]').forEach(function (c) { c.checked = (saved.challenges || []).indexOf(c.value) !== -1; });
-    }
-
-    // The label text of a checked option, so the summary shows what the visitor read.
-    function chosen(name) {
-        return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function (i) {
-            return i.parentNode.textContent.trim();
-        });
-    }
+    // Reads the label of a summary value from the page's own vocabulary.
+    var LABELS = {
+        size: { solo: 'Moi seulement', '2-10': '2 à 10 personnes', '11-50': '11 à 50 personnes', '51-200': '51 à 200 personnes', '200+': 'Plus de 200 personnes' },
+        challenges: { fit: 'Le logiciel ne suit plus la façon de travailler', stuck: 'Un projet est bloqué ou en retard', integration: 'Des systèmes qui ne se parlent pas', 'build-buy': 'Bâtir ou acheter', choice: 'Choisir une technologie ou un fournisseur', cloud: 'Couts, sécurité ou fiabilité du nuage', 'no-tech-lead': 'Personne de technique pour décider', other: 'Autre chose' }
+    };
 
     function summarize() {
-        var a = answers();
-        var fill = { business: a.business, size: chosen('size').join(''), challenges: chosen('challenges').join('\n'), other: a.other };
-        Object.keys(fill).forEach(function (k) {
-            var dd = form.querySelector('[data-summary="' + k + '"]');
-            if (!dd) return;
-            dd.textContent = fill[k];
-            dd.previousElementSibling.hidden = dd.hidden = !fill[k];
+        var s = state.summary || {};
+        var fill = { business: s.business, size: LABELS.size[s.size] || '', challenges: (s.challenges || []).map(function (c) { return LABELS.challenges[c] || c; }).join('\n'), situation: s.situation, focus: s.focus };
+        form.querySelectorAll('[data-summary]').forEach(function (dd) {
+            var v = fill[dd.dataset.summary] || '';
+            dd.textContent = v;
+            dd.previousElementSibling.hidden = dd.hidden = !v;
         });
+    }
+
+    function bubble(role, text, pending) {
+        var el = document.createElement('div');
+        el.className = 'bubble ' + role + (pending ? ' pending' : '');
+        el.textContent = text;
+        chat.appendChild(el);
+        el.scrollIntoView({ block: 'nearest' });
+        return el;
+    }
+
+    function offer(choices) {
+        chips.textContent = '';
+        (choices || []).forEach(function (c) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'cta secondary';
+            b.textContent = c;
+            b.addEventListener('click', function () { ask(c); });
+            chips.appendChild(b);
+        });
+    }
+
+    function renderChat() {
+        chat.textContent = '';
+        bubble('assistant', chat.dataset.intro);
+        state.messages.forEach(function (m) { bubble(m.role, m.content); });
+        var done = !!state.summary;
+        composer.hidden = done;
+        card.hidden = !done;
+        if (done) { summarize(); offer([]); }
+    }
+
+    function fail(step, text) {
+        var el = step.querySelector('.form-error');
+        el.textContent = text || el.textContent;
+        el.hidden = false;
+    }
+
+    function ask(text) {
+        text = (text || '').trim();
+        if (!text) { fail(steps[1], TEXT.empty); return; }
+        var step = steps[1];
+        step.querySelector('.form-error').hidden = true;
+        state.messages.push({ role: 'user', content: text });
+        save();
+        bubble('user', text);
+        draft.value = '';
+        offer([]);
+        send.disabled = true;
+        var pending = bubble('assistant', '…', true);
+        turnstileToken(function (token) {
+            return fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
+                body: JSON.stringify({ messages: state.messages })
+            });
+        }).then(function (res) {
+            return res.json().then(function (body) {
+                if (!res.ok) throw new Error(body.error || String(res.status));
+                pending.remove();
+                state.messages.push({ role: 'assistant', content: body.reply });
+                state.summary = body.done ? body.summary : null;
+                save();
+                bubble('assistant', body.reply);
+                offer(body.choices);
+                if (body.done) { composer.hidden = true; card.hidden = false; summarize(); card.scrollIntoView({ block: 'nearest' }); }
+            });
+        }).catch(function (err) {
+            console.error('chat failed: ' + err.message);
+            pending.remove();
+            state.messages.pop();
+            save();
+            draft.value = text;
+            fail(step, err.message === 'verification' ? TEXT.verification : TEXT.chat);
+        }).then(function () { send.disabled = false; });
     }
 
     function valid(step) {
-        var fields = step.querySelectorAll('input, textarea');
+        var fields = step.querySelectorAll('input');
         for (var i = 0; i < fields.length; i++) {
             if (!fields[i].reportValidity()) return false;
-        }
-        var group = step.querySelector('.choices[data-required]');
-        if (group && !group.querySelector('input:checked')) {
-            group.querySelector('input').setCustomValidity(group.dataset.required);
-            group.querySelector('input').reportValidity();
-            group.querySelector('input').setCustomValidity('');
-            return false;
         }
         return true;
     }
 
     function show(n) {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
+        if (n === 1) renderChat();
         if (n === steps.length - 1) summarize();
-        error.hidden = true;
+        steps[n].querySelector('.form-error').hidden = true;
         window.scrollTo({ top: 0 });
         steps[n].querySelector('h2, h1').focus();
     }
 
-    form.addEventListener('input', save);
-
     form.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-go]');
+        var btn = e.target.closest('[data-go], [data-chat]');
         if (!btn) return;
+        if (btn.dataset.chat === 'send') { ask(draft.value); return; }
+        if (btn.dataset.chat === 'refine') { state.summary = null; save(); card.hidden = true; composer.hidden = false; draft.focus(); return; }
         var current = steps.indexOf(btn.closest('.step'));
         var next = btn.dataset.go === 'next' ? current + 1 : current - 1;
-        if (next > current && !valid(steps[current])) return;
+        if (next > current && (!valid(steps[current]) || (current === 1 && !state.summary))) return;
         show(next);
+    });
+
+    draft.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(draft.value); }
     });
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         var last = steps[steps.length - 1];
-        if (!valid(last)) return;
+        if (!valid(last) || !state.summary) return;
         var submit = form.querySelector('[type="submit"]');
         submit.disabled = true;
-        error.hidden = true;
-        fetch('/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(answers())
+        last.querySelector('.form-error').hidden = true;
+        turnstileToken(function (token) {
+            return fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
+                body: JSON.stringify({ summary: state.summary, name: form.elements.name.value, email: form.elements.email.value })
+            });
         }).then(function (res) {
             return res.json().then(function (body) {
                 if (!res.ok || !body.url) throw new Error('checkout ' + res.status + ' ' + (body.error || ''));
@@ -129,12 +220,11 @@
             });
         }).catch(function (err) {
             console.error('checkout failed: ' + err.message);
-            error.hidden = false;
+            fail(last);
             submit.disabled = false;
         });
     });
 
-    restore();
     show(0);
 })();
 
@@ -174,21 +264,19 @@
     function transcribe(blob) {
         toggle.disabled = true;
         say('Transcription en cours…');
-        fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': blob.type }, body: blob })
-            .then(function (res) {
-                return res.json().then(function (body) {
-                    if (!res.ok || typeof body.text !== 'string') throw new Error('transcribe ' + res.status + ' ' + (body.error || ''));
-                    field.value = (field.value.trim() ? field.value.trim() + '\n' : '') + body.text.trim();
-                    field.value = field.value.slice(0, field.maxLength > 0 ? field.maxLength : undefined);
-                    field.dispatchEvent(new Event('input', { bubbles: true }));
-                    say('');
-                });
-            })
-            .catch(function (err) {
-                console.error('transcription failed: ' + err.message);
-                say('La transcription n’a pas fonctionné. Écrivez votre réponse à la place.', true);
-            })
-            .then(function () { toggle.disabled = false; });
+        turnstileToken(function (token) {
+            return fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': blob.type, 'X-Turnstile-Token': token }, body: blob });
+        }).then(function (res) {
+            return res.json().then(function (body) {
+                if (!res.ok || typeof body.text !== 'string') throw new Error('transcribe ' + res.status + ' ' + (body.error || ''));
+                field.value = ((field.value.trim() ? field.value.trim() + '\n' : '') + body.text.trim()).slice(0, field.maxLength > 0 ? field.maxLength : undefined);
+                field.focus();
+                say('');
+            });
+        }).catch(function (err) {
+            console.error('transcription failed: ' + err.message);
+            say('La transcription n’a pas fonctionné. Écrivez votre réponse à la place.', true);
+        }).then(function () { toggle.disabled = false; });
     }
 
     function start() {

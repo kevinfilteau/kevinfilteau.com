@@ -8,6 +8,8 @@
 // .dev.vars locally). Until they are set, GET answers 404 and the form keeps
 // the voice control hidden, so the visitor only ever sees a working control.
 
+import { human } from '../../lib/turnstile.js';
+
 const TYPES = /^audio\/(webm|mp4|ogg|mpeg|wav|x-m4a|flac)(;.*)?$/;
 const MIN_BYTES = 2048;          // below this there is no speech to hear
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -28,6 +30,7 @@ export async function onRequestPost({ request, env }) {
     const clip = await request.arrayBuffer();
     if (clip.byteLength > MAX_BYTES) return json({ error: 'invalid' }, 413);
     if (clip.byteLength < MIN_BYTES) return json({ error: 'invalid' }, 400);
+    if (!(await human(request, env))) return json({ error: 'verification' }, 403);
 
     try {
         const res = await fetch(env.NARAMACHINE_TRANSCRIBE_URL, {

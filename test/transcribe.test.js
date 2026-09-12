@@ -2,16 +2,19 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { onRequestPost, onRequestGet } from '../functions/api/transcribe.js';
 
-const env = { NARAMACHINE_TRANSCRIBE_URL: 'https://door.naramachine.ai/chute/transcribe', NARAMACHINE_API_KEY: 'nk_test' };
+const env = { NARAMACHINE_TRANSCRIBE_URL: 'https://door.naramachine.ai/chute/transcribe', NARAMACHINE_API_KEY: 'nk_test', TURNSTILE_SECRET_KEY: 'ts' };
 const audio = new Uint8Array(4096).fill(1);
 
-function call(body, type, fetchImpl, e = env) {
+function call(body, type, fetchImpl, e = env, human = true) {
     const calls = [];
-    globalThis.fetch = fetchImpl || (async (url, init) => {
+    const engine = fetchImpl || (async (url, init) => {
         calls.push({ url, init, bytes: new Uint8Array(await new Response(init.body).arrayBuffer()) });
         return new Response(JSON.stringify({ text: ' Nous vendons des pneus. ' }), { status: 200 });
     });
-    const request = new Request('https://kevinfilteau.com/api/transcribe', { method: 'POST', headers: type ? { 'Content-Type': type } : {}, body });
+    globalThis.fetch = async (url, init) => String(url).includes('turnstile') ? new Response(JSON.stringify({ success: human }), { status: 200 }) : engine(url, init);
+    const headers = { 'X-Turnstile-Token': 'tok' };
+    if (type) headers['Content-Type'] = type;
+    const request = new Request('https://kevinfilteau.com/api/transcribe', { method: 'POST', headers, body });
     return onRequestPost({ request, env: e }).then(async (res) => ({ res, body: await res.json(), calls }));
 }
 
@@ -51,6 +54,13 @@ for (const [name, [clip, type]] of Object.entries({
         assert.equal(calls.length, 0);
     });
 }
+
+test('refuses a visitor Turnstile does not confirm, without calling the engine', async () => {
+    const { res, body, calls } = await call(audio, 'audio/webm', null, env, false);
+    assert.equal(res.status, 403);
+    assert.deepEqual(body, { error: 'verification' });
+    assert.equal(calls.length, 0);
+});
 
 test('reports an engine failure with the status only', async () => {
     const logged = [];
