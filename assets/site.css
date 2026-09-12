@@ -276,13 +276,6 @@ main {
 
 .choices input { flex: none; margin-top: 0.4rem; accent-color: #f0f0f0; }
 
-/* Voice input under a text box: record, then the transcript lands in the box. */
-.record { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.75rem; }
-.record .cta { padding: 0.6rem 1.25rem; font-size: 1rem; }
-.record-toggle[aria-pressed="true"] { background: #ffc2b8; border-color: #ffc2b8; color: #0a0a0a; }
-.record-status { color: rgba(240, 240, 240, 0.8); font-size: 1rem; }
-.record-status.error { color: #ffc2b8; }
-
 /* The assistant chat in step 2. */
 .chat { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
 
@@ -318,8 +311,7 @@ main {
 }
 
 .composer textarea:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.7); outline-offset: 2px; }
-.composer-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.75rem; }
-.composer-actions .record { margin-top: 0; }
+.composer-actions { display: flex; justify-content: flex-end; margin-top: 0.75rem; }
 
 .card {
     margin-top: 1.5rem;

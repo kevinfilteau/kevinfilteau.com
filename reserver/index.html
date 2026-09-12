@@ -19,13 +19,13 @@
     <meta property="og:locale" content="fr_CA">
     <meta property="og:image" content="https://kevinfilteau.com/og-image.png">
 
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12b">
-    <script src="/assets/site.js?v=2026-09-12b" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12c">
+    <script src="/assets/site.js?v=2026-09-12c" defer></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12b" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12c" tabindex="-1"></object>
     </div>
 
     <main>
@@ -53,14 +53,10 @@
                 <p class="hint">Un assistant automatisé pose les questions. Kevin lit vos réponses avant la rencontre.</p>
                 <div class="chat" role="log" aria-live="polite" data-intro="Bonjour. Je suis l’assistant automatisé de Kevin. Quelques questions pour préparer votre heure avec lui. D’abord, que fait votre entreprise?"></div>
                 <div class="chips" aria-label="Réponses rapides"></div>
-                <div class="composer" data-record="draft">
+                <div class="composer">
                     <label for="draft" class="visually-hidden">Votre réponse</label>
                     <textarea id="draft" rows="2" maxlength="500" placeholder="Votre réponse"></textarea>
                     <div class="composer-actions">
-                        <div class="record" hidden>
-                            <button type="button" class="cta secondary record-toggle" data-start="Parler" data-stop="Arrêter" aria-pressed="false">Parler</button>
-                            <span class="record-status" role="status" aria-live="polite"></span>
-                        </div>
                         <button type="button" class="cta" data-chat="send">Envoyer</button>
                     </div>
                 </div>
