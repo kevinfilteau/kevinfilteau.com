@@ -1,0 +1,86 @@
+// Turns the booking form answers into a Stripe Checkout session.
+// The answers travel as metadata on the session and on the payment, so they show
+// up on the payment in the Stripe dashboard. Nothing is stored here.
+// Calls the Stripe REST API directly: no dependency, no build step.
+// Needs STRIPE_SECRET_KEY as an encrypted variable on the Pages project
+// (and in .dev.vars for `wrangler pages dev`).
+
+const PRICE = { currency: 'cad', unit_amount: 25000 };
+const SIZES = ['solo', '2-10', '11-50', '51-200', '200+'];
+const CHALLENGES = ['fit', 'stuck', 'integration', 'build-buy', 'choice', 'cloud', 'no-tech-lead', 'other'];
+const TEXT_MAX = 500; // Stripe caps a metadata value at 500 characters.
+
+const CHECKOUT = {
+    locale: 'fr-CA',
+    product: 'Consultation d’une heure avec Kevin Filteau',
+    success: '/reserver/merci/',
+    cancel: '/reserver/',
+    refund: 'Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier.'
+};
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.trim().length <= max ? v.trim() : null;
+
+// Returns the cleaned answers, or null when anything is missing or out of range.
+function validate(b) {
+    if (!b || typeof b !== 'object') return null;
+    const business = text(b.business, TEXT_MAX);
+    const size = SIZES.includes(b.size) ? b.size : null;
+    const challenges = Array.isArray(b.challenges) && b.challenges.length > 0 && b.challenges.every((c) => CHALLENGES.includes(c)) ? b.challenges : null;
+    const other = b.other === '' || b.other == null ? '' : text(b.other, TEXT_MAX);
+    const name = text(b.name, 100);
+    const email = text(b.email, 254);
+    if (!business || !size || !challenges || other === null || !name || !email || !EMAIL.test(email)) return null;
+    return { business, size, challenges, other, name, email };
+}
+
+function sessionParams(a, origin) {
+    const l = CHECKOUT;
+    const p = new URLSearchParams({
+        mode: 'payment',
+        locale: l.locale,
+        customer_email: a.email,
+        success_url: origin + l.success,
+        cancel_url: origin + l.cancel,
+        'automatic_tax[enabled]': 'true',
+        'invoice_creation[enabled]': 'true',
+        'custom_text[submit][message]': l.refund,
+        'line_items[0][quantity]': '1',
+        'line_items[0][price_data][currency]': PRICE.currency,
+        'line_items[0][price_data][unit_amount]': String(PRICE.unit_amount),
+        'line_items[0][price_data][tax_behavior]': 'exclusive',
+        'line_items[0][price_data][product_data][name]': l.product
+    });
+    const meta = { name: a.name, size: a.size, challenges: a.challenges.join(', '), business: a.business, other: a.other };
+    for (const [k, v] of Object.entries(meta)) {
+        p.set(`metadata[${k}]`, v);
+        p.set(`payment_intent_data[metadata][${k}]`, v);
+    }
+    return p;
+}
+
+const json = (body, status) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+
+export async function onRequestPost({ request, env }) {
+    let answers = null;
+    try { answers = validate(await request.json()); } catch (err) { answers = null; }
+    if (!answers) return json({ error: 'invalid' }, 400);
+
+    try {
+        const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: sessionParams(answers, new URL(request.url).origin)
+        });
+        if (!res.ok) {
+            console.error('stripe checkout session failed: status ' + res.status);
+            return json({ error: 'unavailable' }, 502);
+        }
+        const session = await res.json();
+        return json({ url: session.url }, 200);
+    } catch (err) {
+        console.error('stripe checkout session unreachable: ' + (err && err.name));
+        return json({ error: 'unavailable' }, 502);
+    }
+}

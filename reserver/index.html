@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réserver une heure — Kevin Filteau</title>
+    <meta name="description" content="Une heure en visioconférence pour évaluer votre situation et trouver une direction. 250 $ CA, remboursable à 100 % si ça n’a pas aidé.">
+    <meta name="author" content="Kevin Filteau">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230a0a0a'/><text x='50%25' y='52%25' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='700' font-size='40' fill='%23f0f0f0'>K</text></svg>">
+    <link rel="canonical" href="https://kevinfilteau.com/reserver/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Kevin Filteau">
+    <meta property="og:title" content="Réserver une heure — Kevin Filteau">
+    <meta property="og:description" content="Une heure en visioconférence pour évaluer votre situation et trouver une direction. 250 $ CA, remboursable à 100 % si ça n’a pas aidé.">
+    <meta property="og:url" content="https://kevinfilteau.com/reserver/">
+    <meta property="og:locale" content="fr_CA">
+    <meta property="og:image" content="https://kevinfilteau.com/og-image.png">
+
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-12">
+    <script src="/assets/site.js?v=2026-09-12" defer></script>
+</head>
+<body>
+    <div class="rays" aria-hidden="true">
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-12" tabindex="-1"></object>
+    </div>
+
+    <main>
+        <form id="book" class="book" novalidate>
+            <section class="step">
+                <p class="step-count">Étape 1 de 4</p>
+                <h1 tabindex="-1">Réserver une heure</h1>
+                <h2>Ce que vous obtenez</h2>
+                <ul>
+                    <li>Une heure en visioconférence, vous et moi.</li>
+                    <li>Un regard clair sur votre situation et des options concrètes.</li>
+                    <li>Un résumé écrit le jour même&nbsp;: la décision, les options, les prochaines étapes.</li>
+                </ul>
+                <p class="price">250&nbsp;$ CA<small>plus taxes</small></p>
+                <p class="guarantee">Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier. Sans question.</p>
+                <p>Les trois prochaines étapes prennent environ cinq minutes. Elles me donnent ce qu’il faut pour que l’heure compte.</p>
+                <div class="actions">
+                    <button type="button" class="cta" data-go="next">Commencer</button>
+                </div>
+            </section>
+
+            <section class="step" hidden>
+                <p class="step-count">Étape 2 de 4</p>
+                <h2 tabindex="-1">Votre entreprise</h2>
+                <div class="field" data-record="business">
+                    <label for="business">Décrivez votre entreprise</label>
+                    <span class="hint">Ce que vous faites, pour qui, et comment le travail se fait. Écrivez, ou parlez et je mets vos mots en texte.</span>
+                    <textarea id="business" name="business" maxlength="500" required></textarea>
+                    <div class="record" hidden>
+                        <button type="button" class="cta secondary record-toggle" data-start="Parler plutôt" data-stop="Arrêter" aria-pressed="false">Parler plutôt</button>
+                        <span class="record-status" role="status" aria-live="polite"></span>
+                    </div>
+                </div>
+                <div class="field">
+                    <span class="legend" id="size-label">Taille de votre entreprise</span>
+                    <div class="choices" role="radiogroup" aria-labelledby="size-label" data-required="Choisissez une taille.">
+                        <label><input type="radio" name="size" value="solo"> Moi seulement</label>
+                        <label><input type="radio" name="size" value="2-10"> 2 à 10 personnes</label>
+                        <label><input type="radio" name="size" value="11-50"> 11 à 50 personnes</label>
+                        <label><input type="radio" name="size" value="51-200"> 51 à 200 personnes</label>
+                        <label><input type="radio" name="size" value="200+"> Plus de 200 personnes</label>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="button" class="cta secondary" data-go="back">Retour</button>
+                    <button type="button" class="cta" data-go="next">Suivant</button>
+                </div>
+            </section>
+
+            <section class="step" hidden>
+                <p class="step-count">Étape 3 de 4</p>
+                <h2 tabindex="-1">Votre défi</h2>
+                <div class="field">
+                    <span class="legend" id="challenges-label">Qu’est-ce qui vous bloque?</span>
+                    <span class="hint">Cochez tout ce qui s’applique. On les passe en revue ensemble.</span>
+                    <div class="choices" role="group" aria-labelledby="challenges-label" data-required="Cochez au moins un choix.">
+                        <label><input type="checkbox" name="challenges" value="fit"> Notre logiciel ne suit plus notre façon de travailler</label>
+                        <label><input type="checkbox" name="challenges" value="stuck"> Un projet est bloqué ou en retard</label>
+                        <label><input type="checkbox" name="challenges" value="integration"> Nos systèmes ne se parlent pas</label>
+                        <label><input type="checkbox" name="challenges" value="build-buy"> On hésite entre bâtir et acheter</label>
+                        <label><input type="checkbox" name="challenges" value="choice"> On doit choisir une technologie ou un fournisseur</label>
+                        <label><input type="checkbox" name="challenges" value="cloud"> Les couts, la sécurité ou la fiabilité du nuage nous inquiètent</label>
+                        <label><input type="checkbox" name="challenges" value="no-tech-lead"> On n’a personne de technique avec qui y réfléchir</label>
+                        <label><input type="checkbox" name="challenges" value="other"> Autre chose</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="other">Autre chose que je devrais savoir?</label>
+                    <span class="hint">Quelques lignes suffisent. Ce qui s’est passé, ce que vous avez essayé, ce qui est en jeu.</span>
+                    <textarea id="other" name="other" maxlength="500"></textarea>
+                </div>
+                <div class="actions">
+                    <button type="button" class="cta secondary" data-go="back">Retour</button>
+                    <button type="button" class="cta" data-go="next">Suivant</button>
+                </div>
+            </section>
+
+            <section class="step" hidden>
+                <p class="step-count">Étape 4 de 4</p>
+                <h2 tabindex="-1">Vérifier et payer</h2>
+                <dl class="summary">
+                    <dt>Votre entreprise</dt><dd data-summary="business"></dd>
+                    <dt>Taille</dt><dd data-summary="size"></dd>
+                    <dt>Votre défi</dt><dd data-summary="challenges"></dd>
+                    <dt>Autre chose</dt><dd data-summary="other"></dd>
+                </dl>
+                <div class="field">
+                    <label for="name">Votre nom</label>
+                    <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+                </div>
+                <div class="field">
+                    <label for="email">Votre courriel</label>
+                    <span class="hint">Où j’envoie le reçu, l’heure de la rencontre et le résumé.</span>
+                    <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                </div>
+                <p class="guarantee">250&nbsp;$ CA plus taxes, remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier.</p>
+                <p>Stripe prend le paiement. Je vous écris dans un jour ouvrable pour fixer l’heure.</p>
+                <p class="form-error" role="alert" hidden>La page de paiement n’a pas pu s’ouvrir. Réessayez dans un instant ou écrivez-moi à info@kevinfilteau.com.</p>
+                <div class="actions">
+                    <button type="button" class="cta secondary" data-go="back">Retour</button>
+                    <button type="submit" class="cta">Payer et réserver</button>
+                </div>
+            </section>
+        </form>
+
+        <footer class="contact">
+            <span id="email-link" data-u="info" data-d="kevinfilteau.com">
+                <span class="obf">moc.uaetlifnivek<span class="obf-hide">null</span>@ofni</span>
+            </span>
+            <span id="phone-link" data-a="1418" data-b="254" data-c="7193">
+                <span class="obf">3917-452-814 1+</span>
+            </span>
+            <a href="https://www.linkedin.com/company/kevin-filteau" rel="me noopener" target="_blank">LinkedIn</a>
+        </footer>
+    </main>
+</body>
+</html>

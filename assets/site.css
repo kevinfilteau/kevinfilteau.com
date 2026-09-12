@@ -1,5 +1,5 @@
-/* Site layout, shared by every page in every language.
-   Add a page: link this file, put the rays div and the lang switcher in the body,
+/* Site layout, shared by every page.
+   Add a page: link this file, put the rays div in the body,
    then write sections inside <main>. No page defines its own layout. */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,30 +33,6 @@ body {
     height: 100%;
     pointer-events: none;
 }
-
-.lang-switcher {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.25rem;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 1.25rem 1.5rem 0;
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.lang-switcher a {
-    color: rgba(240, 240, 240, 0.75);
-    padding: 0.25rem 0.5rem;
-    text-decoration: none;
-    transition: color 0.15s;
-}
-
-.lang-switcher a:hover { color: #f0f0f0; }
-.lang-switcher a.active { color: #f0f0f0; }
-.lang-switcher .sep { color: rgba(240, 240, 240, 0.35); align-self: center; }
 
 main {
     display: flex;
@@ -94,13 +70,51 @@ main {
     letter-spacing: -0.02em;
 }
 
-.hero p {
-    color: #f0f0f0;
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin-top: 0.5rem;
-    letter-spacing: 0.05em;
+.hero .eyebrow {
+    color: rgba(240, 240, 240, 0.75);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+}
+
+.hero .lede {
+    color: #f0f0f0;
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.45;
+    max-width: 34em;
+    margin: 1.25rem auto 0;
+    text-wrap: pretty;
+}
+
+.hero .cta { margin-top: 2.25rem; }
+
+/* Button. The primary is light on dark; the secondary is an outline. */
+.cta {
+    display: inline-block;
+    padding: 0.9rem 1.75rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 999px;
+    background: #f0f0f0;
+    color: #0a0a0a;
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-shadow: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.cta:hover { opacity: 0.85; }
+.cta:disabled { opacity: 0.5; cursor: default; }
+
+.cta.secondary {
+    background: transparent;
+    color: #f0f0f0;
+    border-color: rgba(240, 240, 240, 0.45);
 }
 
 .prose {
@@ -117,6 +131,24 @@ main {
 }
 
 .prose > * + * { margin-top: 2.25rem; }
+
+.prose h2 {
+    color: rgba(240, 240, 240, 0.7);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.prose h2 + * { margin-top: 1rem; }
+
+.price {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.price small { font-size: 1.1rem; font-weight: 400; margin-left: 0.5rem; }
 
 .prose ul { padding-left: 1.25rem; }
 
@@ -152,6 +184,133 @@ main {
     vertical-align: -0.10em;
 }
 
+/* The booking form: one step visible at a time (site.js toggles the hidden attribute). */
+.book {
+    width: 100%;
+    max-width: 700px;
+    color: #f0f0f0;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+}
+
+.book h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.book .step-count {
+    color: rgba(240, 240, 240, 0.7);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.book h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.book p + p, .book ul + p, .book p + ul, .book ul + .price { margin-top: 1rem; }
+.book .price + .guarantee { margin-top: 1rem; }
+.book ul { padding-left: 1.25rem; }
+.book li + li { margin-top: 0.5rem; }
+.book a { color: #f0f0f0; }
+
+.field { margin-top: 1.75rem; }
+
+.field > label, .field > .legend {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.field .hint {
+    display: block;
+    color: rgba(240, 240, 240, 0.7);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+}
+
+.field > input, .field > textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font: inherit;
+    color: #f0f0f0;
+    text-shadow: none;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+}
+
+.field textarea { min-height: 8rem; resize: vertical; }
+
+.field > input:focus-visible, .field > textarea:focus-visible, .choices label:focus-within {
+    outline: 2px solid rgba(240, 240, 240, 0.7);
+    outline-offset: 2px;
+}
+
+.choices { display: grid; gap: 0.5rem; }
+
+.choices label {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.choices label:has(:checked) {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+.choices input { flex: none; margin-top: 0.4rem; accent-color: #f0f0f0; }
+
+/* Voice input under a text box: record, then the transcript lands in the box. */
+.record { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.75rem; }
+.record .cta { padding: 0.6rem 1.25rem; font-size: 1rem; }
+.record-toggle[aria-pressed="true"] { background: #ffc2b8; border-color: #ffc2b8; color: #0a0a0a; }
+.record-status { color: rgba(240, 240, 240, 0.8); font-size: 1rem; }
+.record-status.error { color: #ffc2b8; }
+
+.summary dt {
+    color: rgba(240, 240, 240, 0.7);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.summary dd { margin: 0.25rem 0 1.25rem; white-space: pre-wrap; }
+
+.guarantee {
+    margin-top: 1.75rem;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid rgba(240, 240, 240, 0.6);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+}
+
+.actions .cta:only-child { margin-left: auto; }
+
+.form-error { color: #ffc2b8; margin-top: 1.25rem; }
+
 .contact {
     display: flex;
     flex-direction: column;
@@ -180,8 +339,12 @@ main {
         border-radius: 14px;
     }
 
-    .lang-switcher { padding: 1rem 1rem 0; }
     .hero h1 { font-size: 2.25rem; }
+    .hero .lede { font-size: 1.15rem; }
+    .book h1 { font-size: 1.6rem; }
+    .book h2 { font-size: 1.3rem; }
+    .book, .field > input, .field > textarea { font-size: 1.05rem; }
+    .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
     .quote p { font-size: 1.15rem; }
     .quote .qm { font-size: 1.9rem; }
