@@ -180,7 +180,8 @@ var turnstileToken = (function () {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
         if (n === 1) renderChat();
         if (n === steps.length - 1) summarize();
-        steps[n].querySelector('.form-error').hidden = true;
+        var error = steps[n].querySelector('.form-error');
+        if (error) error.hidden = true;
         window.scrollTo({ top: 0 });
         steps[n].querySelector('h2, h1').focus();
     }
