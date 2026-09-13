@@ -86,6 +86,8 @@ export async function onRequestPost({ request, env }) {
             return json({ error: 'unavailable' }, 502);
         }
         const session = await res.json();
+        // The webhook confirms from this lead, and the reminder brings the visitor back to it.
+        if (env.LEADS) await env.LEADS.put(session.id, JSON.stringify({ ...answers, sessionId: session.id, test: key !== env.STRIPE_SECRET_KEY, paid: false, createdAt: Date.now() }), { expirationTtl: 7 * 24 * 3600 });
         return json({ url: session.url }, 200);
     } catch (err) {
         console.error('stripe checkout session unreachable: ' + (err && err.name));

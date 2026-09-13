@@ -68,6 +68,23 @@ with the checkout; when it matches `TEST_MODE_TOKEN` the Function signs with `ST
 payment lands in the test dashboard. Stripe Tax must also be configured in test mode, or the session
 fails. The payment step shows a "Mode test" note when the token is set.
 
+### After the checkout
+
+`wrangler.toml` binds the KV namespace `LEADS` and turns on `nodejs_compat`. `functions/api/checkout.js`
+stores the contact and the summary under the Stripe session id (7 days). Stripe calls
+`functions/api/stripe-webhook.js` (endpoint `we_1UFGPAGVehei72YpJrpSZxi9`, secret `STRIPE_WEBHOOK_SECRET`,
+signature checked by `lib/stripe-signature.js`):
+
+- `checkout.session.completed`: confirmation email to the visitor, a copy to info@kevinfilteau.com,
+  lead marked paid. Sent once even if Stripe delivers twice.
+- `checkout.session.expired` (24 h after the session was created, unpaid): one reminder by text or
+  email, per the visitor's choice, with `/reserver/?resume=<session id>`. That link asks
+  `functions/api/lead.js` for the lead and opens the payment step filled in.
+
+`lib/notify.js` holds the message texts and the senders: Gmail SMTP through `worker-mailer`
+(`SMTP_USER`, `SMTP_PASS`, a Google app password) and Twilio (`TWILIO_ACCOUNT_SID`,
+`TWILIO_AUTH_TOKEN`, `TWILIO_FROM`). Test-mode sessions never reach the live webhook endpoint.
+
 Tests: `npm test` (Node 22+). They mock every network call; no key needed.
 
 Every page needs `link rel="canonical"` and an entry in `sitemap.xml`.

@@ -1,0 +1,10 @@
+# Pages project config. The KV namespace keeps unpaid leads for the reminder and the resume link;
+# nodejs_compat is what worker-mailer (SMTP over Cloudflare sockets) needs.
+name = "kevinfilteau-com"
+pages_build_output_dir = "."
+compatibility_date = "2025-10-08"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "LEADS"
+id = "02ef4e8316c241408c7754aced67a173"

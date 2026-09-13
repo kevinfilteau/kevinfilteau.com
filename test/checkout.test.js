@@ -89,6 +89,22 @@ for (const [name, patch] of Object.entries({
     });
 }
 
+test('keeps the lead in KV under the session id for the webhook and the reminder', async () => {
+    const store = new Map();
+    globalThis.fetch = async (url, init) => String(url).includes('turnstile') ? new Response('{"success":true}', { status: 200 })
+        : new Response(JSON.stringify({ id: 'cs_live_42', url: 'https://checkout.stripe.com/c/pay/cs_live_42' }), { status: 200 });
+    const request = new Request('https://kevinfilteau.com/api/checkout', { method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: JSON.stringify(answers) });
+    const res = await onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk', TURNSTILE_SECRET_KEY: 'ts', LEADS: { put: async (k, v, o) => { store.set(k, { v: JSON.parse(v), o }); } } } });
+    assert.equal(res.status, 200);
+    const saved = store.get('cs_live_42');
+    assert.equal(saved.v.sessionId, 'cs_live_42');
+    assert.equal(saved.v.email, 'ann@example.com');
+    assert.equal(saved.v.phone, '+14185550199');
+    assert.equal(saved.v.situation, 'A project is late.');
+    assert.equal(saved.v.paid, false);
+    assert.equal(saved.o.expirationTtl, 7 * 24 * 3600);
+});
+
 test('uses the Stripe test key when the test token matches, the live key otherwise', async () => {
     assert.equal((await call({ ...answers, test: 'tok-abc' })).calls[0].headers.Authorization, 'Bearer rk_test_y');
     assert.equal((await call({ ...answers, test: 'wrong' })).calls[0].headers.Authorization, 'Bearer sk_test_x');

@@ -362,6 +362,24 @@ if (document.querySelector('[data-clear-booking]')) {
 
     restoreContact();
     // Back to the step the visitor was on, after a refresh or a visit to the privacy page.
+    // /reserver/?resume=<session id>: a reminder link. The lead comes back from the
+    // server and the visitor lands on the payment step with everything filled.
+    var resume = new URLSearchParams(location.search).get('resume');
+    if (resume) {
+        fetch('/api/lead?id=' + encodeURIComponent(resume)).then(function (res) {
+            if (!res.ok) throw new Error('lead ' + res.status);
+            return res.json();
+        }).then(function (lead) {
+            state.contact = lead.contact;
+            state.summary = lead.summary;
+            state.messages = [];
+            state.reached = steps.length - 1;
+            save();
+            restoreContact();
+            show(steps.length - 1);
+        }).catch(function (err) { console.error('resume failed: ' + err.message); });
+    }
+
     var start = state.step || 0;
     if (start > CHAT && !state.summary) start = CHAT;
     show(start);
