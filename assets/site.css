@@ -473,7 +473,7 @@ main {
 }
 
 .link-button:hover { color: #f0f0f0; }
-.cancel { margin-top: 2.5rem; text-align: center; }
+.cancel { margin-top: 1rem; text-align: left; }
 .cancel[hidden] { display: none; }
 
 /* Confirmation before wiping the form. */
@@ -528,6 +528,10 @@ main {
 }
 
 .actions .cta:only-child { margin-left: auto; }
+.actions.start { justify-content: flex-start; }
+.actions.start .cta:only-child { margin-left: 0; }
+
+.book ::placeholder { color: rgba(240, 240, 240, 0.5); opacity: 1; }
 
 .form-error { color: #ffc2b8; margin-top: 1.25rem; }
 
