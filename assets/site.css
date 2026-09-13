@@ -42,31 +42,18 @@ body {
 }
 
 .brand a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: #f0f0f0;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
+    display: inline-block;
+    line-height: 0;
     transition: opacity 0.15s;
 }
 
 .brand a:hover { opacity: 0.75; }
 
-.brand .k {
-    display: inline-grid;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 0.45rem;
-    background: #0a0a0a;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-shadow: none;
+.brand img {
+    height: 30px;
+    width: auto;
+    /* A translucent site logo reads as a bug; the SVG is white letters only. */
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
 }
 
 main {
@@ -463,6 +450,7 @@ main {
     .book h2 { font-size: 1.3rem; }
     .book, .field > input, .field > textarea { font-size: 1.05rem; }
     .brand { padding: 1rem 1rem 0; }
+    .brand img { height: 24px; }
     .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
     .quote p { font-size: 1.15rem; }
