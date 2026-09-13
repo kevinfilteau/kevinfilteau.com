@@ -490,6 +490,7 @@ main {
 
 .book h2 { margin-top: 2rem; }
 .book h1 + p, .book h2 + ul, .book h2 + p { margin-top: 0; }
+.book h1 + ul { margin-top: 1rem; }
 .book ul + h2, .book p + h2 { margin-top: 2rem; }
 
 .turnstile { margin-top: 1.5rem; }
