@@ -51,7 +51,9 @@ Both Functions cost money to call, so each requires a Cloudflare Turnstile token
 in `X-Turnstile-Token`, checked by `lib/turnstile.js`. The widget's site key sits in `reserver/index.html`
 (`.turnstile[data-sitekey]`); the secret is `TURNSTILE_SECRET_KEY`. Tokens are single-use, so the page
 resets the widget after each call. Cloudflare's test pair (`1x00000000000000000000AA` /
-`1x0000000000000000000000000000000AA`) always passes and is what `.dev.vars` uses locally.
+`1x0000000000000000000000000000000AA`) always passes: on `localhost` the page swaps in the test site key
+itself, and `.dev.vars` holds the test secret. A token that never comes fails after 20 seconds with
+"La vérification a échoué".
 
 Price, tax behaviour, refund text and the return URLs live at the top of `functions/api/checkout.js`.
 Encrypted variables on the Pages project (Production and Preview), mirrored in the gitignored `.dev.vars`

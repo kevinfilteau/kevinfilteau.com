@@ -28,24 +28,36 @@ var turnstileToken = (function () {
     var box = document.querySelector('.turnstile');
     if (!box) return null;
     var widget = null, token = null, waiters = [];
+    // The real widget only answers on kevinfilteau.com; Cloudflare's test key always passes.
+    var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    var sitekey = local ? '1x00000000000000000000AA' : box.dataset.sitekey;
+
+    function settle(t) { waiters.splice(0).forEach(function (w) { w(t); }); }
 
     function render() {
         if (!window.turnstile) { setTimeout(render, 100); return; }
         widget = turnstile.render(box, {
-            sitekey: box.dataset.sitekey,
+            sitekey: sitekey,
             appearance: 'interaction-only',
-            callback: function (t) { token = t; waiters.splice(0).forEach(function (w) { w(t); }); },
+            callback: function (t) { token = t; settle(t); },
             'expired-callback': function () { token = null; turnstile.reset(widget); },
-            'error-callback': function () { token = null; }
+            'error-callback': function () { token = null; settle(null); }
         });
     }
     render();
 
     // Resolves with a fresh token, then the caller runs and the widget is reset.
+    // Fails after 20 seconds, so a broken widget shows an error instead of a spinner forever.
     return function (run) {
-        var take = token ? Promise.resolve(token) : new Promise(function (resolve) { waiters.push(resolve); });
+        var take = token ? Promise.resolve(token) : new Promise(function (resolve) {
+            waiters.push(resolve);
+            setTimeout(function () { resolve(null); }, 20000);
+        });
         token = null;
-        return take.then(run).finally(function () { if (widget !== null) turnstile.reset(widget); });
+        return take.then(function (t) {
+            if (!t) throw new Error('verification');
+            return run(t);
+        }).finally(function () { if (widget !== null) turnstile.reset(widget); });
     };
 })();
 
@@ -77,6 +89,9 @@ if (document.querySelector('[data-clear-booking]')) {
     };
 
     try { state = JSON.parse(sessionStorage.getItem(key)) || state; } catch (err) {}
+    // A question that never got its answer (reload mid-flight) must not linger: the next
+    // one would follow it and the transcript would no longer alternate.
+    if (state.messages.length % 2 === 1) state.messages.pop();
     function save() {
         try { sessionStorage.setItem(key, JSON.stringify(state)); } catch (err) {}
     }
@@ -156,7 +171,6 @@ if (document.querySelector('[data-clear-booking]')) {
         var step = steps[CHAT];
         step.querySelector('.form-error').hidden = true;
         state.messages.push({ role: 'user', content: text });
-        save();
         bubble('user', text);
         draft.value = '';
         offer([]);
