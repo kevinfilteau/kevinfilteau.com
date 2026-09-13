@@ -60,7 +60,8 @@ Price, tax behaviour, refund text and the return URLs live at the top of `functi
 Encrypted variables on the Pages project (Production and Preview), mirrored in the gitignored `.dev.vars`
 for local preview: `STRIPE_SECRET_KEY`, `ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`. `ANTHROPIC_BASE_URL` is optional and only for pointing the chat at a mock.
 Stripe Tax must be enabled on the account: the session asks for `automatic_tax`. Refunds are done in the
-Stripe dashboard.
+Stripe dashboard. Checkout accepts promotion codes: `ESSAI100` (coupon `essai-100`, 100 % off, once) runs
+the whole flow without a charge, for tests with real people. Deactivate it in the Stripe dashboard when done.
 
 Tests: `npm test` (Node 22+). They mock every network call; no key needed.
 
