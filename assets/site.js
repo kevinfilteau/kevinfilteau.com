@@ -117,7 +117,8 @@ if (document.querySelector('[data-clear-booking]')) {
 
     function summarize() {
         var s = state.summary || {};
-        var fill = { business: s.business, size: LABELS.size[s.size] || '', challenges: (s.challenges || []).map(function (c) { return LABELS.challenges[c] || c; }).join('\n'), situation: s.situation, focus: s.focus };
+        var c = state.contact || {};
+        var fill = { contact: [c.name, c.company].filter(Boolean).join('\n'), business: s.business, size: LABELS.size[s.size] || '', challenges: (s.challenges || []).map(function (c) { return LABELS.challenges[c] || c; }).join('\n'), situation: s.situation, focus: s.focus };
         form.querySelectorAll('[data-summary]').forEach(function (dd) {
             var v = fill[dd.dataset.summary] || '';
             dd.textContent = v;
@@ -233,6 +234,7 @@ if (document.querySelector('[data-clear-booking]')) {
         state.step = n;
         save();
         if (n === CHAT) renderChat();
+        if (n === steps.length - 1) summarize();
         var error = steps[n].querySelector('.form-error');
         if (error) error.hidden = true;
         window.scrollTo({ top: 0 });
