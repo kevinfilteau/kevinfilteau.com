@@ -80,6 +80,8 @@ if (document.querySelector('[data-clear-booking]')) {
     var composer = form.querySelector('.composer');
     var draft = form.querySelector('#draft');
     var card = form.querySelector('.card');
+    var edit = card.querySelector('.edit');
+    var field = function (k) { return edit.querySelector('[name="' + k + '"]'); };
     var send = form.querySelector('[data-chat="send"]');
     var state = { contact: {}, messages: [], summary: null };
     var TEXT = {
@@ -124,6 +126,35 @@ if (document.querySelector('[data-clear-booking]')) {
             dd.textContent = v;
             dd.previousElementSibling.hidden = dd.hidden = !v;
         });
+        ['business', 'situation', 'focus', 'size'].forEach(function (k) { field(k).value = s[k] || ''; });
+        edit.querySelectorAll('input[name="challenges"]').forEach(function (c) { c.checked = (s.challenges || []).indexOf(c.value) !== -1; });
+    }
+
+    // Manual edit of the summary once the chat is over. Same rules as the checkout: business, size,
+    // at least one challenge and the situation are required.
+    function editing(on) {
+        edit.hidden = !on;
+        card.querySelector('.view').hidden = on;
+        if (on) field('business').focus();
+    }
+
+    function saveEdit() {
+        var text = function (k) { return field(k).value.trim().slice(0, 500); };
+        var required = ['business', 'size', 'situation'];
+        for (var i = 0; i < required.length; i++) {
+            var el = field(required[i]);
+            el.setCustomValidity(text(required[i]) ? '' : 'Ce champ est requis.');
+            if (!el.reportValidity()) { el.setCustomValidity(''); return; }
+        }
+        if (!valid(edit)) return;
+        state.summary = {
+            business: text('business'), size: field('size').value,
+            challenges: Array.prototype.map.call(edit.querySelectorAll('input[name="challenges"]:checked'), function (c) { return c.value; }),
+            situation: text('situation'), focus: text('focus')
+        };
+        save();
+        summarize();
+        editing(false);
     }
 
     function bubble(role, text, pending) {
@@ -154,7 +185,7 @@ if (document.querySelector('[data-clear-booking]')) {
         var done = !!state.summary;
         composer.hidden = done;
         card.hidden = !done;
-        if (done) { summarize(); offer([]); }
+        if (done) { summarize(); offer([]); editing(false); }
     }
 
     var CHAT = 1;
@@ -209,7 +240,7 @@ if (document.querySelector('[data-clear-booking]')) {
             if (!fields[i].reportValidity()) return false;
         }
         var group = step.querySelector('.choices[data-required]');
-        if (group && !group.querySelector('input:checked')) {
+        if (group && !group.closest('[hidden]') && !group.querySelector('input:checked')) {
             var first = group.querySelector('input');
             first.setCustomValidity(group.dataset.required);
             first.reportValidity();
@@ -228,7 +259,9 @@ if (document.querySelector('[data-clear-booking]')) {
         progress.forEach(function (li, i) {
             li.classList.toggle('done', i < n);
             li.classList.toggle('current', i === n);
-            if (i === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+            var b = li.querySelector('button');
+            b.disabled = i >= n;
+            if (i === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
         });
         cancel.hidden = n === 0;
         state.step = n;
@@ -242,10 +275,13 @@ if (document.querySelector('[data-clear-booking]')) {
     }
 
     form.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-go], [data-chat]');
+        var btn = e.target.closest('[data-go], [data-chat], [data-edit], [data-step]');
         if (!btn) return;
+        if (btn.dataset.step) { show(Number(btn.dataset.step)); return; }
         if (btn.dataset.chat === 'send') { ask(draft.value); return; }
-        if (btn.dataset.chat === 'refine') { state.summary = null; save(); card.hidden = true; composer.hidden = false; draft.focus(); return; }
+        if (btn.dataset.edit === 'start') { editing(true); return; }
+        if (btn.dataset.edit === 'cancel') { summarize(); editing(false); return; }
+        if (btn.dataset.edit === 'save') { saveEdit(); return; }
         var current = steps.indexOf(btn.closest('.step'));
         var next = btn.dataset.go === 'next' ? current + 1 : current - 1;
         if (next > current && (!valid(steps[current]) || (current === CHAT && !state.summary))) return;

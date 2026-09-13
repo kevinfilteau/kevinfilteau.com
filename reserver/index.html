@@ -22,13 +22,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@600&family=Urbanist:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-13b">
-    <script src="/assets/site.js?v=2026-09-13b" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-13e">
+    <script src="/assets/site.js?v=2026-09-13e" defer></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-13b" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-13e" tabindex="-1"></object>
     </div>
 
     <header class="brand">
@@ -38,9 +38,9 @@
     <main>
         <form id="book" class="book" novalidate>
             <ol class="progress" aria-label="Progression">
-                <li>Offre</li>
-                <li>Situation</li>
-                <li>Paiement</li>
+                <li><button type="button" data-step="0"><span class="num" aria-hidden="true">1</span>Offre</button></li>
+                <li><button type="button" data-step="1"><span class="num" aria-hidden="true">2</span>Situation</button></li>
+                <li><button type="button" data-step="2"><span class="num" aria-hidden="true">3</span>Paiement</button></li>
             </ol>
 
             <section class="step">
@@ -89,8 +89,50 @@
                         <dt>La situation</dt><dd data-summary="situation"></dd>
                         <dt>L’heure devrait porter sur</dt><dd data-summary="focus"></dd>
                     </dl>
-                    <div class="actions">
-                        <button type="button" class="cta secondary" data-chat="refine">Préciser</button>
+                    <div class="edit" hidden>
+                        <div class="field">
+                            <label for="edit-business">Votre entreprise</label>
+                            <textarea id="edit-business" name="business" rows="2" maxlength="500"></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="edit-size">Taille</label>
+                            <select id="edit-size" name="size">
+                                <option value="">Choisir</option>
+                                <option value="solo">Moi seulement</option>
+                                <option value="2-10">2 à 10 personnes</option>
+                                <option value="11-50">11 à 50 personnes</option>
+                                <option value="51-200">51 à 200 personnes</option>
+                                <option value="200+">Plus de 200 personnes</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <span class="legend" id="edit-challenges-label">Votre défi</span>
+                            <div class="choices" role="group" aria-labelledby="edit-challenges-label" data-required="Cochez au moins un choix.">
+                                <label><input type="checkbox" name="challenges" value="fit"> Le logiciel ne suit plus la façon de travailler</label>
+                                <label><input type="checkbox" name="challenges" value="stuck"> Un projet est bloqué ou en retard</label>
+                                <label><input type="checkbox" name="challenges" value="integration"> Des systèmes qui ne se parlent pas</label>
+                                <label><input type="checkbox" name="challenges" value="build-buy"> Bâtir ou acheter</label>
+                                <label><input type="checkbox" name="challenges" value="choice"> Choisir une technologie ou un fournisseur</label>
+                                <label><input type="checkbox" name="challenges" value="cloud"> Couts, sécurité ou fiabilité du nuage</label>
+                                <label><input type="checkbox" name="challenges" value="no-tech-lead"> Personne de technique pour décider</label>
+                                <label><input type="checkbox" name="challenges" value="other"> Autre chose</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="edit-situation">La situation</label>
+                            <textarea id="edit-situation" name="situation" rows="3" maxlength="500"></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="edit-focus">L’heure devrait porter sur</label>
+                            <textarea id="edit-focus" name="focus" rows="2" maxlength="500"></textarea>
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="cta secondary" data-edit="cancel">Annuler</button>
+                            <button type="button" class="cta" data-edit="save">Enregistrer</button>
+                        </div>
+                    </div>
+                    <div class="actions view">
+                        <button type="button" class="cta secondary" data-edit="start">Modifier</button>
                         <button type="button" class="cta" data-go="next">C’est juste</button>
                     </div>
                 </div>

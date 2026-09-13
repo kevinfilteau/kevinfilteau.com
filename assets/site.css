@@ -251,7 +251,7 @@ main {
     margin-bottom: 0.6rem;
 }
 
-.field > input, .field > textarea {
+.field > input, .field > textarea, .field > select {
     width: 100%;
     padding: 0.8rem 1rem;
     font: inherit;
@@ -264,7 +264,7 @@ main {
 
 .field textarea { min-height: 8rem; resize: vertical; }
 
-.field > input:focus-visible, .field > textarea:focus-visible, .choices label:focus-within {
+.field > input:focus-visible, .field > textarea:focus-visible, .field > select:focus-visible, .choices label:focus-within {
     outline: 2px solid rgba(240, 240, 240, 0.7);
     outline-offset: 2px;
 }
@@ -289,25 +289,66 @@ main {
 
 .choices input { flex: none; margin-top: 0.4rem; accent-color: #f0f0f0; }
 
-/* Progress across the steps of the form. */
+/* Progress across the steps of the form: numbered dots joined by a line.
+   A finished step is a button back to it. */
 .progress {
     display: flex;
-    gap: 0.5rem;
     list-style: none;
     margin-bottom: 2.5rem;
 }
 
-.progress li {
-    flex: 1;
-    padding-top: 0.6rem;
-    border-top: 3px solid rgba(255, 255, 255, 0.2);
-    color: rgba(240, 240, 240, 0.55);
-    font-size: 0.9rem;
-    font-weight: 500;
+.progress li { position: relative; flex: 1; }
+.book .progress li + li { margin-top: 0; } /* outranks the .book li + li spacing */
+
+.progress li + li::before {
+    content: '';
+    position: absolute;
+    top: 0.9rem;
+    left: -50%;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
 }
 
-.progress li.done { border-top-color: rgba(240, 240, 240, 0.6); }
-.progress li.current { border-top-color: #f0f0f0; color: #f0f0f0; font-weight: 600; }
+.progress li.done + li::before { background: rgba(240, 240, 240, 0.7); }
+
+.progress button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: rgba(240, 240, 240, 0.5);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: default;
+}
+
+.progress .num {
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: #141414;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-shadow: none;
+}
+
+.progress .done button { color: rgba(240, 240, 240, 0.85); cursor: pointer; }
+.progress .done button:hover { color: #f0f0f0; }
+.progress .done .num { background: #f0f0f0; border-color: #f0f0f0; color: #0a0a0a; }
+.progress .current button { color: #f0f0f0; font-weight: 600; }
+.progress .current .num { border-color: #f0f0f0; }
+.progress button:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.7); outline-offset: 4px; border-radius: 6px; }
 
 .book h3 { font-size: 1.1rem; font-weight: 600; margin-top: 2rem; }
 
@@ -364,6 +405,9 @@ main {
 .card[hidden] { display: none; }
 .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
 .card .actions { margin-top: 0.5rem; }
+.card .edit[hidden], .card .view[hidden] { display: none; }
+.card .edit .field:first-child { margin-top: 0; }
+.field > select option { color: #0a0a0a; }
 
 .link-button {
     background: none;
@@ -466,7 +510,7 @@ main {
     .hero .lede { font-size: 1.15rem; }
     .book h1 { font-size: 1.6rem; }
     .book h2 { font-size: 1.3rem; }
-    .book, .field > input, .field > textarea { font-size: 1.05rem; }
+    .book, .field > input, .field > textarea, .field > select { font-size: 1.05rem; }
     .brand { height: 3rem; }
     .brand a { font-size: 1.35rem; }
     .actions .cta { flex: 1; text-align: center; }
