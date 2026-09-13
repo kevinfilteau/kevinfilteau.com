@@ -256,11 +256,13 @@ if (document.querySelector('[data-clear-booking]')) {
 
     function show(n) {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
+        state.reached = Math.max(state.reached || 0, n);
         progress.forEach(function (li, i) {
             li.classList.toggle('done', i < n);
             li.classList.toggle('current', i === n);
+            li.classList.toggle('reached', i > n && i <= state.reached);
             var b = li.querySelector('button');
-            b.disabled = i >= n;
+            b.disabled = i === n || i > state.reached;
             if (i === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
         });
         cancel.hidden = n === 0;
@@ -277,7 +279,13 @@ if (document.querySelector('[data-clear-booking]')) {
     form.addEventListener('click', function (e) {
         var btn = e.target.closest('[data-go], [data-chat], [data-edit], [data-step]');
         if (!btn) return;
-        if (btn.dataset.step) { show(Number(btn.dataset.step)); return; }
+        if (btn.dataset.step) {
+            var target = Number(btn.dataset.step);
+            var here = steps.indexOf(steps.filter(function (s) { return !s.hidden; })[0]);
+            if (target > here && (!valid(steps[here]) || (target > CHAT && !state.summary))) return;
+            show(target);
+            return;
+        }
         if (btn.dataset.chat === 'send') { ask(draft.value); return; }
         if (btn.dataset.edit === 'start') { editing(true); return; }
         if (btn.dataset.edit === 'cancel') { summarize(); editing(false); return; }

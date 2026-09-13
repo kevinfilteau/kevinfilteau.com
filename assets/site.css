@@ -376,6 +376,12 @@ main {
 .progress .done .num              { color: #f0f0f0; }
 .progress .done button::after     { content: 'complétée'; }
 
+.progress .reached button         { color: rgba(240, 240, 240, 0.85); cursor: pointer; }
+.progress .reached button:hover   { color: #f0f0f0; }
+.progress .reached .num           { color: #f0f0f0; }
+.progress .reached button::after  { content: 'commencée'; }
+.progress li.reached::before      { background: rgba(240, 240, 240, 0.7); }
+
 .progress .current button         { color: #f0f0f0; }
 .progress .current .num           { color: #f0f0f0; }
 .progress .current button::after  { content: 'en cours'; color: rgba(240, 240, 240, 0.8); }
