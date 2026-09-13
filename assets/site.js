@@ -142,7 +142,7 @@ if (document.querySelector('[data-clear-booking]')) {
         if (done) { summarize(); offer([]); }
     }
 
-    var CHAT = 2;
+    var CHAT = 1;
 
     function fail(step, text) {
         var el = step.querySelector('.form-error');
@@ -207,10 +207,18 @@ if (document.querySelector('[data-clear-booking]')) {
 
     var cancel = form.querySelector('.cancel');
     var confirm = form.querySelector('.confirm');
+    var progress = form.querySelectorAll('.progress li');
 
     function show(n) {
         steps.forEach(function (s, i) { s.hidden = i !== n; });
+        progress.forEach(function (li, i) {
+            li.classList.toggle('done', i < n);
+            li.classList.toggle('current', i === n);
+            if (i === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+        });
         cancel.hidden = n === 0;
+        state.step = n;
+        save();
         if (n === CHAT) renderChat();
         if (n === steps.length - 1) summarize();
         var error = steps[n].querySelector('.form-error');
@@ -250,7 +258,7 @@ if (document.querySelector('[data-clear-booking]')) {
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         var last = steps[steps.length - 1];
-        if (!state.summary) return;
+        if (!valid(last) || !state.summary) return;
         var submit = form.querySelector('[type="submit"]');
         submit.disabled = true;
         last.querySelector('.form-error').hidden = true;
@@ -272,6 +280,26 @@ if (document.querySelector('[data-clear-booking]')) {
         });
     });
 
+    // Local preview only: one click fills every contact field.
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        var fill = document.createElement('button');
+        fill.type = 'button';
+        fill.className = 'cta secondary devfill';
+        fill.textContent = 'Remplir (test)';
+        fill.addEventListener('click', function () {
+            form.elements.name.value = 'Anne Test';
+            form.elements.company.value = 'Pneus Test inc.';
+            form.elements.email.value = 'anne@example.com';
+            form.elements.phone.value = '418 555-0199';
+            form.querySelector('input[name="channel"][value="sms"]').checked = true;
+            readContact();
+        });
+        document.body.appendChild(fill);
+    }
+
     restoreContact();
-    show(0);
+    // Back to the step the visitor was on, after a refresh or a visit to the privacy page.
+    var start = state.step || 0;
+    if (start > CHAT && !state.summary) start = CHAT;
+    show(start);
 })();

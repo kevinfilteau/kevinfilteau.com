@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validateContact } from '../lib/contact.js';
+import { validateContact, validateWho } from '../lib/contact.js';
 
 const good = { name: ' Anne Tremblay ', company: 'Pneus Tremblay inc.', email: 'anne@example.com', phone: '(418) 555-0199', channel: 'sms' };
 
@@ -32,4 +32,11 @@ for (const [name, patch] of Object.entries({
 test('rejects anything that is not an object', () => {
     assert.equal(validateContact(null), null);
     assert.equal(validateContact('x'), null);
+});
+
+test('validateWho needs only a name and a company', () => {
+    assert.deepEqual(validateWho({ name: ' Anne ', company: 'Pneus inc.', phone: 'junk' }), { name: 'Anne', company: 'Pneus inc.' });
+    assert.equal(validateWho({ name: 'Anne', company: '' }), null);
+    assert.equal(validateWho({ name: '', company: 'x' }), null);
+    assert.equal(validateWho(null), null);
 });

@@ -24,7 +24,7 @@ function call(body, opts = {}) {
 }
 
 const turn = [{ role: 'user', content: 'On vend des pneus à des garages.' }];
-const contact = { name: 'Anne', company: 'Pneus inc.', email: 'anne@example.com', phone: '418-555-0199', channel: 'sms' };
+const contact = { name: 'Anne', company: 'Pneus inc.' };
 
 test('answers the visitor with the reply, the choices and the done flag', async () => {
     const { res, body, calls } = await call({ messages: turn });
@@ -77,8 +77,8 @@ for (const [name, messages] of Object.entries({
     });
 }
 
-test('rejects a chat without a valid contact, without calling the model', async () => {
-    for (const bad of [{ messages: turn, contact: null }, { messages: turn, contact: { ...contact, phone: '12' } }, { messages: turn, contact: { ...contact, channel: 'fax' } }]) {
+test('rejects a chat without a name and a company, without calling the model', async () => {
+    for (const bad of [{ messages: turn, contact: null }, { messages: turn, contact: { ...contact, name: ' ' } }, { messages: turn, contact: { ...contact, company: '' } }]) {
         const { res, body, calls } = await call(bad);
         assert.equal(res.status, 400);
         assert.deepEqual(body, { error: 'invalid' });

@@ -17,7 +17,7 @@ const CHECKOUT = {
     product: 'Consultation d’une heure avec Kevin Filteau',
     success: '/reserver/merci/',
     cancel: '/reserver/',
-    refund: 'Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si l’heure ne vous a pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier.'
+    refund: 'Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si vous estimez que je ne vous ai pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier. Sans question.'
 };
 
 const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.trim().length <= max ? v.trim() : null;

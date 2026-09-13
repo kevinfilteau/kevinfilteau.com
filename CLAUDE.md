@@ -26,23 +26,26 @@ The `prepaid-code/` pages keep their own article layout and inline CSS; they do 
 
 ## Booking flow
 
-The offer is a paid one-hour consultation. `reserver/` holds a four-step form driven by `assets/site.js`
-(one `.step` visible at a time, state in `sessionStorage`):
+The offer is a paid one-hour consultation. `reserver/` holds a three-step form driven by `assets/site.js`
+(one `.step` visible at a time, state including the current step in `sessionStorage`, so a refresh or a
+visit to the privacy page comes back to the same step):
 
-1. What you get, price, guarantee.
-2. Contact: name, company, email, mobile (texts only) and the preferred channel, SMS or email.
-   `lib/contact.js` validates it; both Functions refuse a call without a valid contact, so the chat
-   cannot be reached without it.
-3. A chat with an automated assistant. The page sends the whole transcript to `functions/api/chat.js` on
+1. What you get, price, guarantee, plus name and company ("who will I talk to"). `lib/contact.js`
+   `validateWho` checks them; the chat Function refuses a call without them.
+2. A chat with an automated assistant. The page sends the whole transcript to `functions/api/chat.js` on
    every turn; the Function calls Claude Opus 5 through the Anthropic SDK with a frozen French system
    prompt and a JSON output schema (`reply`, `choices`, `done`, `summary`). Server-side refusal fallbacks
    are on (`fallbacks: "default"`). The visitor gets at most 8 turns; from the 6th the model is told to
    conclude. When `done`, the summary (business, size, challenges, situation, focus) is shown on a card
    the visitor accepts or refines. No fallback form: if the model is down, the visitor sees an error.
-4. Review and pay. The summary and the contact go to `functions/api/checkout.js`, which creates a Stripe
+3. Review, then email, mobile (texts only) and the preferred channel, SMS or email, then pay.
+   `validateContact` checks the full contact. The summary and the contact go to `functions/api/checkout.js`, which creates a Stripe
    Checkout Session over the REST API with the summary and the contact as metadata on the session and on
    the payment, then returns the Checkout URL. Stripe sends the visitor back to `reserver/merci/` (`noindex`,
    not in the sitemap).
+
+On `localhost` the page adds a "Remplir (test)" button that fills every contact field; it never appears
+in production.
 
 Both Functions cost money to call, so each requires a Cloudflare Turnstile token
 in `X-Turnstile-Token`, checked by `lib/turnstile.js`. The widget's site key sits in `reserver/index.html`

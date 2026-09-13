@@ -5,7 +5,7 @@
 // TURNSTILE_SECRET_KEY as encrypted variables on the Pages project.
 import Anthropic from '@anthropic-ai/sdk';
 import { human } from '../../lib/turnstile.js';
-import { validateContact } from '../../lib/contact.js';
+import { validateWho } from '../../lib/contact.js';
 
 export const SIZES = ['solo', '2-10', '11-50', '51-200', '200+'];
 export const CHALLENGES = ['fit', 'stuck', 'integration', 'build-buy', 'choice', 'cloud', 'no-tech-lead', 'other'];
@@ -61,9 +61,9 @@ const FORMAT = {
 const json = (body, status) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 // The transcript as the browser keeps it: user and assistant alternate, user first and last.
-// The contact is collected before the chat; without it the model is not called.
+// The name and the company are collected before the chat; without them the model is not called.
 function validate(b) {
-    if (!validateContact(b && b.contact)) return null;
+    if (!validateWho(b && b.contact)) return null;
     const m = b && Array.isArray(b.messages) ? b.messages : null;
     if (!m || m.length === 0 || m.length % 2 === 0 || m.length > MAX_TURNS * 2 - 1) return null;
     const out = [];
