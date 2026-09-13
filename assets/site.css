@@ -235,6 +235,11 @@ main {
 .book li + li { margin-top: 0.5rem; }
 .book a { color: #f0f0f0; }
 
+/* Link to the privacy page under a hint: smaller and dimmer than the text above it. */
+.book .privacy-link { margin-top: 0.5rem; font-size: 0.9rem; }
+.book .privacy-link a { color: rgba(240, 240, 240, 0.55); text-decoration-color: rgba(240, 240, 240, 0.35); }
+.book .privacy-link a:hover { color: rgba(240, 240, 240, 0.85); }
+
 .field { margin-top: 1.75rem; }
 
 .field > label, .field > .legend {
