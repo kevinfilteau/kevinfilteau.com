@@ -17,7 +17,7 @@ function call(body, fetchImpl, human = true) {
     const request = new Request('https://kevinfilteau.com/api/checkout', {
         method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: typeof body === 'string' ? body : JSON.stringify(body)
     });
-    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x', TURNSTILE_SECRET_KEY: 'ts' } }).then(async (res) => ({ res, body: await res.json(), calls }));
+    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_TEST_SECRET_KEY: 'rk_test_y', TEST_MODE_TOKEN: 'tok-abc', TURNSTILE_SECRET_KEY: 'ts' } }).then(async (res) => ({ res, body: await res.json(), calls }));
 }
 
 test('creates a Stripe Checkout session and returns its URL', async () => {
@@ -88,6 +88,12 @@ for (const [name, patch] of Object.entries({
         assert.equal(calls.length, 0);
     });
 }
+
+test('uses the Stripe test key when the test token matches, the live key otherwise', async () => {
+    assert.equal((await call({ ...answers, test: 'tok-abc' })).calls[0].headers.Authorization, 'Bearer rk_test_y');
+    assert.equal((await call({ ...answers, test: 'wrong' })).calls[0].headers.Authorization, 'Bearer sk_test_x');
+    assert.equal((await call(answers)).calls[0].headers.Authorization, 'Bearer sk_test_x');
+});
 
 test('refuses a visitor Turnstile does not confirm, without calling Stripe', async () => {
     const { res, body, calls } = await call(answers, null, false);

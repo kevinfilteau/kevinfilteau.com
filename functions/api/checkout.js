@@ -3,7 +3,9 @@
 // up on the payment in the Stripe dashboard. Nothing is stored here.
 // Calls the Stripe REST API directly: no dependency, no build step.
 // Needs STRIPE_SECRET_KEY and TURNSTILE_SECRET_KEY as encrypted variables on the
-// Pages project (and in .dev.vars for `wrangler pages dev`).
+// Pages project (and in .dev.vars for `wrangler pages dev`). With TEST_MODE_TOKEN and
+// STRIPE_TEST_SECRET_KEY set, a body whose `test` equals the token runs Checkout in
+// Stripe test mode: /reserver/?test=<token> carries it, test cards pay, no money moves.
 
 import { human } from '../../lib/turnstile.js';
 import { SIZES, CHALLENGES } from './chat.js';
@@ -65,16 +67,19 @@ function sessionParams(a, origin) {
 
 const json = (body, status) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
+const testMode = (b, env) => Boolean(env.TEST_MODE_TOKEN && env.STRIPE_TEST_SECRET_KEY && b && typeof b.test === 'string' && b.test === env.TEST_MODE_TOKEN);
+
 export async function onRequestPost({ request, env }) {
-    let answers = null;
-    try { answers = validate(await request.json()); } catch (err) { answers = null; }
+    let answers = null, body = null;
+    try { body = await request.json(); answers = validate(body); } catch (err) { answers = null; }
     if (!answers) return json({ error: 'invalid' }, 400);
     if (!(await human(request, env))) return json({ error: 'verification' }, 403);
 
+    const key = testMode(body, env) ? env.STRIPE_TEST_SECRET_KEY : env.STRIPE_SECRET_KEY;
     try {
         const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
             method: 'POST',
-            headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/x-www-form-urlencoded' },
             body: sessionParams(answers, new URL(request.url).origin)
         });
         if (!res.ok) {

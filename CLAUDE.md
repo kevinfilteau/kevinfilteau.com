@@ -64,6 +64,12 @@ Stripe dashboard. Checkout accepts promotion codes. Stripe refuses a 0 $ total i
 code is `ESSAI1` (coupon `essai-1`, 249 $ off, once): the tester pays 1 $ plus taxes on a real card and the
 flow ends on the thanks page. Refund or keep it; deactivate the code in the Stripe dashboard when done.
 
+Stripe test mode: `/reserver/?test=<TEST_MODE_TOKEN>` keeps the token in the booking state and sends it
+with the checkout; when it matches `TEST_MODE_TOKEN` the Function signs with `STRIPE_TEST_SECRET_KEY`
+(a test-mode restricted key), so the Stripe page runs in test mode (card 4242 4242 4242 4242) and the
+payment lands in the test dashboard. Stripe Tax must also be configured in test mode, or the session
+fails. The payment step shows a "Mode test" note when the token is set.
+
 Tests: `npm test` (Node 22+). They mock every network call; no key needed.
 
 Every page needs `link rel="canonical"` and an entry in `sitemap.xml`.

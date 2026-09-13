@@ -91,6 +91,11 @@ if (document.querySelector('[data-clear-booking]')) {
     };
 
     try { state = JSON.parse(sessionStorage.getItem(key)) || state; } catch (err) {}
+    // /reserver/?test=<token> switches the checkout to Stripe test mode; the token is checked server-side.
+    var testToken = new URLSearchParams(location.search).get('test');
+    if (testToken) state.test = testToken;
+    var testNote = form.querySelector('.test-note');
+    if (testNote) testNote.hidden = !state.test;
     // A question that never got its answer (reload mid-flight) must not linger: the next
     // one would follow it and the transcript would no longer alternate.
     if (state.messages.length % 2 === 1) state.messages.pop();
@@ -324,7 +329,7 @@ if (document.querySelector('[data-clear-booking]')) {
             return fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
-                body: JSON.stringify({ summary: state.summary, contact: state.contact })
+                body: JSON.stringify({ summary: state.summary, contact: state.contact, test: state.test || undefined })
             });
         }).then(function (res) {
             return res.json().then(function (body) {
