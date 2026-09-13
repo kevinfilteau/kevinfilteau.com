@@ -154,10 +154,10 @@ main {
 
 .prose > * + * { margin-top: 2.25rem; }
 
-.prose h2 {
+.prose h2, .quotes h2 {
     color: #f0f0f0;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .prose h2 + * { margin-top: 1rem; }
@@ -581,14 +581,7 @@ main {
     margin: 0; /* main already spaces its sections */
 }
 
-.quotes-eyebrow {
-    margin: 0 0 1.625rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(240, 240, 240, 0.6);
-}
+.quotes h2 { margin-bottom: 1rem; }
 
 .quotes-viewport { overflow: hidden; }
 
@@ -614,16 +607,6 @@ main {
     letter-spacing: -0.02em;
     text-wrap: pretty;
 }
-
-.quote figcaption {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 1.05rem;
-}
-
-.quote-name { font-weight: 600; }
-.quote-role { color: rgba(240, 240, 240, 0.6); }
 
 /* nav */
 .quotes-nav {
