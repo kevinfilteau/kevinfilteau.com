@@ -60,9 +60,7 @@ Price, tax behaviour, refund text and the return URLs live at the top of `functi
 Encrypted variables on the Pages project (Production and Preview), mirrored in the gitignored `.dev.vars`
 for local preview: `STRIPE_SECRET_KEY`, `ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`. `ANTHROPIC_BASE_URL` is optional and only for pointing the chat at a mock.
 Stripe Tax must be enabled on the account: the session asks for `automatic_tax`. Refunds are done in the
-Stripe dashboard. Checkout accepts promotion codes. Stripe refuses a 0 $ total in payment mode, so the test
-code is `ESSAI1` (coupon `essai-1`, 249 $ off, once): the tester pays 1 $ plus taxes on a real card and the
-flow ends on the thanks page. Refund or keep it; deactivate the code in the Stripe dashboard when done.
+Stripe dashboard. Checkout shows no promotion-code field.
 
 Stripe test mode: `/reserver/?test=<TEST_MODE_TOKEN>` keeps the token in the booking state and sends it
 with the checkout; when it matches `TEST_MODE_TOKEN` the Function signs with `STRIPE_TEST_SECRET_KEY`

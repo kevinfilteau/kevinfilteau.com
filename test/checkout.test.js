@@ -32,7 +32,7 @@ test('creates a Stripe Checkout session and returns its URL', async () => {
     assert.equal(p.get('line_items[0][price_data][currency]'), 'cad');
     assert.equal(p.get('line_items[0][price_data][tax_behavior]'), 'exclusive');
     assert.equal(p.get('automatic_tax[enabled]'), 'true');
-    assert.equal(p.get('allow_promotion_codes'), 'true');
+    assert.equal(p.get('allow_promotion_codes'), null);
     assert.equal(p.get('locale'), 'fr-CA');
     assert.equal(p.get('customer_email'), 'ann@example.com');
     assert.equal(p.get('success_url'), 'https://kevinfilteau.com/reserver/merci/');
