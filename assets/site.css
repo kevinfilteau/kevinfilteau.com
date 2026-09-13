@@ -36,9 +36,11 @@ body {
 
 /* Wordmark at the top of every page, a link back to the home page. */
 .brand {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 1.25rem 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5rem;
+    padding: 0 1.5rem;
 }
 
 .brand a {
@@ -61,7 +63,7 @@ main {
     justify-content: center;
     min-height: calc(100vh - 9rem);
     max-width: 860px;
-    margin: 3rem auto;
+    margin: 0 auto 3rem;
     padding: 4rem 3rem;
     gap: 5rem;
     background: rgba(0, 0, 0, 0.42);
@@ -437,7 +439,7 @@ main {
 @media (max-width: 720px) {
     main {
         min-height: calc(100vh - 5rem);
-        margin: 1rem;
+        margin: 0 1rem 1rem;
         padding: 3rem 1.5rem;
         border-radius: 14px;
     }
@@ -447,7 +449,7 @@ main {
     .book h1 { font-size: 1.6rem; }
     .book h2 { font-size: 1.3rem; }
     .book, .field > input, .field > textarea { font-size: 1.05rem; }
-    .brand { padding: 1rem 1rem 0; }
+    .brand { height: 3rem; }
     .brand a { font-size: 1.35rem; }
     .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
