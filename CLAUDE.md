@@ -62,11 +62,12 @@ for local preview: `STRIPE_SECRET_KEY`, `ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_K
 Stripe Tax must be enabled on the account: the session asks for `automatic_tax`. Refunds are done in the
 Stripe dashboard. Checkout shows no promotion-code field.
 
-Stripe test mode: `/reserver/?test=<TEST_MODE_TOKEN>` keeps the token in the booking state and sends it
-with the checkout; when it matches `TEST_MODE_TOKEN` the Function signs with `STRIPE_TEST_SECRET_KEY`
-(a test-mode restricted key), so the Stripe page runs in test mode (card 4242 4242 4242 4242) and the
-payment lands in the test dashboard. Stripe Tax must also be configured in test mode, or the session
-fails. The payment step shows a "Mode test" note when the token is set.
+Stripe test mode: open any page with `?dev=1` (`?dev=0` to leave). `assets/site.js` keeps the flag in
+`localStorage` and the form sends `test: true` with the checkout; the Function then signs with
+`STRIPE_TEST_SECRET_KEY` (a test-mode restricted key), so the Stripe page runs in test mode (card
+4242 4242 4242 4242) and the payment lands in the test dashboard. Stripe Tax must also be configured in
+test mode, or the session fails. The payment step shows a "Mode test" note. The flag is not a secret:
+anyone who knows it can end on the thanks page without paying, and no email goes out for test payments.
 
 ### After the checkout
 

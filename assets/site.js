@@ -61,6 +61,19 @@ var turnstileToken = (function () {
     };
 })();
 
+/* Dev mode: open any page with ?dev=1 to switch this browser to Stripe test mode,
+   ?dev=0 to leave it. The flag lives in localStorage; the checkout Function reads
+   the `test` field the form sends and signs with the test key. */
+function devMode() {
+    try {
+        var q = new URLSearchParams(location.search).get('dev');
+        if (q === '1') localStorage.setItem('dev', '1');
+        if (q === '0') localStorage.removeItem('dev');
+        return localStorage.getItem('dev') === '1';
+    } catch (err) { return false; }
+}
+devMode();
+
 /* After a payment the booking is done: forget it in this browser. */
 if (document.querySelector('[data-clear-booking]')) {
     try { sessionStorage.removeItem('book'); } catch (err) {}
@@ -91,11 +104,9 @@ if (document.querySelector('[data-clear-booking]')) {
     };
 
     try { state = JSON.parse(sessionStorage.getItem(key)) || state; } catch (err) {}
-    // /reserver/?test=<token> switches the checkout to Stripe test mode; the token is checked server-side.
-    var testToken = new URLSearchParams(location.search).get('test');
-    if (testToken) state.test = testToken;
+    // Dev mode (?dev=1 on any page) sends the checkout to Stripe test mode.
     var testNote = form.querySelector('.test-note');
-    if (testNote) testNote.hidden = !state.test;
+    if (testNote) testNote.hidden = !devMode();
     // A question that never got its answer (reload mid-flight) must not linger: the next
     // one would follow it and the transcript would no longer alternate.
     if (state.messages.length % 2 === 1) state.messages.pop();
@@ -329,7 +340,7 @@ if (document.querySelector('[data-clear-booking]')) {
             return fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-Turnstile-Token': token },
-                body: JSON.stringify({ summary: state.summary, contact: state.contact, test: state.test || undefined })
+                body: JSON.stringify({ summary: state.summary, contact: state.contact, test: devMode() || undefined })
             });
         }).then(function (res) {
             return res.json().then(function (body) {

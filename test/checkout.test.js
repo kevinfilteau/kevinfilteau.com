@@ -17,7 +17,7 @@ function call(body, fetchImpl, human = true) {
     const request = new Request('https://kevinfilteau.com/api/checkout', {
         method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: typeof body === 'string' ? body : JSON.stringify(body)
     });
-    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_TEST_SECRET_KEY: 'rk_test_y', TEST_MODE_TOKEN: 'tok-abc', TURNSTILE_SECRET_KEY: 'ts' } }).then(async (res) => ({ res, body: await res.json(), calls }));
+    return onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_TEST_SECRET_KEY: 'rk_test_y', TURNSTILE_SECRET_KEY: 'ts' } }).then(async (res) => ({ res, body: await res.json(), calls }));
 }
 
 test('creates a Stripe Checkout session and returns its URL', async () => {
@@ -105,10 +105,20 @@ test('keeps the lead in KV under the session id for the webhook and the reminder
     assert.equal(saved.o.expirationTtl, 7 * 24 * 3600);
 });
 
-test('uses the Stripe test key when the test token matches, the live key otherwise', async () => {
-    assert.equal((await call({ ...answers, test: 'tok-abc' })).calls[0].headers.Authorization, 'Bearer rk_test_y');
-    assert.equal((await call({ ...answers, test: 'wrong' })).calls[0].headers.Authorization, 'Bearer sk_test_x');
+test('uses the Stripe test key when the page asks for test mode, the live key otherwise', async () => {
+    assert.equal((await call({ ...answers, test: true })).calls[0].headers.Authorization, 'Bearer rk_test_y');
+    assert.equal((await call({ ...answers, test: 'yes' })).calls[0].headers.Authorization, 'Bearer sk_test_x');
     assert.equal((await call(answers)).calls[0].headers.Authorization, 'Bearer sk_test_x');
+});
+
+test('refuses test mode when no test key is configured, instead of charging for real', async () => {
+    const calls = [];
+    globalThis.fetch = async (url, init) => { if (String(url).includes('turnstile')) return new Response('{"success":true}', { status: 200 }); calls.push(url); return new Response('{}', { status: 200 }); };
+    const request = new Request('https://kevinfilteau.com/api/checkout', { method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: JSON.stringify({ ...answers, test: true }) });
+    const res = await onRequestPost({ request, env: { STRIPE_SECRET_KEY: 'sk_live', TURNSTILE_SECRET_KEY: 'ts' } });
+    assert.equal(res.status, 503);
+    assert.deepEqual(await res.json(), { error: 'unavailable' });
+    assert.equal(calls.length, 0);
 });
 
 test('refuses a visitor Turnstile does not confirm, without calling Stripe', async () => {
