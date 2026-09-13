@@ -61,45 +61,6 @@ var turnstileToken = (function () {
     };
 })();
 
-/* Stories carousel on the home page: arrows, a counter, and a slow auto-advance that
-   stops as soon as the visitor touches it or asks for reduced motion. */
-(function () {
-    var box = document.querySelector('.stories');
-    if (!box) return;
-    var track = box.querySelector('.stories-track');
-    var slides = track.querySelectorAll('.story');
-    var count = box.querySelector('.stories-count');
-    var timer = null;
-
-    // Nearest slide to the current scroll position; offsets are relative to the track.
-    function index() {
-        var best = 0;
-        slides.forEach(function (s, i) { if (Math.abs(s.offsetLeft - track.scrollLeft) < Math.abs(slides[best].offsetLeft - track.scrollLeft)) best = i; });
-        return best;
-    }
-    function go(i) {
-        i = (i + slides.length) % slides.length;
-        track.scrollTo({ left: slides[i].offsetLeft, behavior: 'smooth' });
-    }
-    function stop() { clearInterval(timer); timer = null; }
-
-    track.addEventListener('scroll', function () { count.textContent = (index() + 1) + ' / ' + slides.length; });
-    box.addEventListener('click', function (e) {
-        var b = e.target.closest('[data-story]');
-        if (!b) return;
-        stop();
-        go(index() + (b.dataset.story === 'next' ? 1 : -1));
-    });
-    track.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); stop(); go(index() + (e.key === 'ArrowRight' ? 1 : -1)); }
-    });
-    ['pointerdown', 'wheel', 'touchstart', 'focusin'].forEach(function (t) { track.addEventListener(t, stop, { passive: true }); });
-
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        timer = setInterval(function () { if (!box.matches(':hover')) go(index() + 1); }, 9000);
-    }
-})();
-
 /* After a payment the booking is done: forget it in this browser. */
 if (document.querySelector('[data-clear-booking]')) {
     try { sessionStorage.removeItem('book'); } catch (err) {}

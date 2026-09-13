@@ -206,44 +206,6 @@ main {
     vertical-align: -0.10em;
 }
 
-/* Stories on the home page: one quote at a time, scroll-snap, arrows, slow auto-advance. */
-.stories { width: 100%; }
-
-.stories-track {
-    position: relative; /* slide offsets are measured from the track */
-    display: flex;
-    gap: 2rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.stories-track::-webkit-scrollbar { display: none; }
-.stories-track:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.7); outline-offset: 6px; border-radius: 6px; }
-
-.story {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    margin: 0;
-}
-
-.story blockquote { margin: 0; }
-.story p { line-height: 1.45; text-wrap: pretty; } /* size inherited from .prose */
-.story .qm { font-family: Georgia, 'Times New Roman', serif; font-size: 2.25rem; line-height: 0; vertical-align: -0.10em; }
-.story figcaption { margin-top: 1rem; color: rgba(240, 240, 240, 0.65); font-size: 1rem; }
-
-.stories-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.stories-nav .cta { padding: 0.5rem 1.1rem; font-size: 1rem; }
-.stories-count { color: rgba(240, 240, 240, 0.65); font-size: 0.95rem; font-variant-numeric: tabular-nums; }
-
 /* The booking form: one step visible at a time (site.js toggles the hidden attribute). */
 .book {
     width: 100%;
@@ -606,7 +568,135 @@ main {
     .brand a { font-size: 1.35rem; }
     .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
-    .story .qm { font-size: 1.9rem; }
     .quote p { font-size: 1.15rem; }
     .quote .qm { font-size: 1.9rem; }
+}
+
+/* Quotes that slide sideways. The dots stretch into pills for the current one.
+   quotes.js moves the track and keeps the dots in sync; without JS the first
+   quote shows and the nav does nothing. */
+.quotes {
+    width: 100%;
+    max-width: 700px;
+    margin: 0; /* main already spaces its sections */
+}
+
+.quotes-eyebrow {
+    margin: 0 0 1.625rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(240, 240, 240, 0.6);
+}
+
+.quotes-viewport { overflow: hidden; }
+
+.quotes-track {
+    display: flex;
+    transition: transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quote {
+    flex: 0 0 100%;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.quote blockquote {
+    margin: 0;
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+}
+
+.quote figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 1.05rem;
+}
+
+.quote-name { font-weight: 600; }
+.quote-role { color: rgba(240, 240, 240, 0.6); }
+
+/* nav */
+.quotes-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 2.25rem;
+}
+
+.quotes-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.quotes-dots button {
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(240, 240, 240, 0.28);
+    cursor: pointer;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1), background 200ms linear;
+}
+
+.quotes-dots button[aria-selected='true'] {
+    width: 44px;
+    background: #f0f0f0;
+}
+
+.quotes-arrows {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.quotes-arrows button {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #f0f0f0;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
+    color: #f0f0f0;
+    cursor: pointer;
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quotes-arrows button:hover { background: rgba(240, 240, 240, 0.1); }
+
+.quotes-dots button:focus-visible,
+.quotes-arrows button:focus-visible {
+    outline: 2px solid rgba(240, 240, 240, 0.7);
+    outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .quotes-track { transition: none; }
+    .quotes-dots button { transition: background 200ms linear; }
+}
+
+@media (max-width: 30rem) {
+    .quote blockquote { font-size: 1.6rem; }
+    .quotes-nav { margin-top: 1.75rem; }
 }

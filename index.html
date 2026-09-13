@@ -46,12 +46,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@600&family=Urbanist:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-13l">
-    <script src="/assets/site.js?v=2026-09-13l" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-13m">
+    <script src="/assets/site.js?v=2026-09-13m" defer></script>
+    <script src="/assets/quotes.js?v=2026-09-13m" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-13l" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-13m" tabindex="-1"></object>
     </div>
 
     <header class="brand">
@@ -73,55 +74,89 @@
             </ul>
         </section>
 
-        <section class="prose">
-            <h2>Ça vous ressemble?</h2>
-            <div class="stories" aria-roledescription="carrousel" aria-label="Situations typiques">
-                <div class="stories-track" tabindex="0">
-                <figure class="story" aria-roledescription="diapositive" aria-label="1 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;On a acheté le logiciel il y a huit ans. Depuis, on a changé trois fois de façon de travailler. Lui, non. Tout le monde a son fichier Excel à côté.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Directrice des opérations, manufacturier</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="2 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Le projet devait prendre quatre mois. Ça fait dix-huit. Le fournisseur dit que c’est presque fini depuis le printemps. Je ne sais plus si je pousse ou si j’arrête.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Propriétaire, distribution</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="3 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;La boutique en ligne, la comptabilité, l’inventaire&nbsp;: trois systèmes, trois vérités. Ma commis passe ses vendredis à retaper des chiffres d’un écran à l’autre.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Copropriétaire, commerce de détail</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="4 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Tout le monde me dit qu’il existe surement un logiciel pour ça. J’en ai essayé quatre. Aucun ne fait vraiment ce qu’on fait. Est-ce que je suis rendu à le faire bâtir?&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Fondateur, services professionnels</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="5 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;J’ai trois soumissions sur mon bureau. Trois technologies, trois prix, et aucun moyen de savoir laquelle est la bonne.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Directeur général, PME</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="6 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;On m’a dit de tout mettre dans le nuage. Je ne sais pas ce que ça coute vraiment, ni où sont mes données, ni ce qui arrive si ça tombe un lundi matin.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Propriétaire, cabinet comptable</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="7 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Mon neveu s’occupait de l’informatique. Il a un vrai emploi maintenant. Je n’ai personne à qui poser mes questions sans qu’on essaie de me vendre quelque chose.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Propriétaire, entreprise familiale</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="8 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Le logiciel, un nouvel employé l’apprend en une journée. Nos trucs pour le contourner, en deux semaines.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Gestionnaire, transport</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="9 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Le rapport que la banque me demande, ça me prend trois jours à le monter. Les chiffres existent quelque part, mais jamais au même endroit.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Présidente, construction</figcaption>
-                </figure>
-                <figure class="story" aria-roledescription="diapositive" aria-label="10 de 10">
-                    <blockquote><p><span class="qm">«</span>&nbsp;Le fournisseur veut qu’on passe à la nouvelle version. C’est un gros montant, et personne ne peut me dire ce qu’on perd si on dit non.&nbsp;<span class="qm">»</span></p></blockquote>
-                    <figcaption>Directeur, organisme</figcaption>
-                </figure>
+        <section class="quotes" aria-roledescription="carrousel" aria-label="Situations typiques">
+            <p class="quotes-eyebrow" id="quotes-label">Ça vous ressemble?</p>
+
+            <div class="quotes-viewport">
+                <div class="quotes-track">
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="1 sur 10">
+                <blockquote>On a acheté le logiciel il y a huit ans. Depuis, on a changé trois fois de façon de travailler. Lui, non. Tout le monde a son fichier Excel à côté.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Directrice des opérations, manufacturier</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="2 sur 10">
+                <blockquote>Le projet devait prendre quatre mois. Ça fait dix-huit. Le fournisseur dit que c’est presque fini depuis le printemps. Je ne sais plus si je pousse ou si j’arrête.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Propriétaire, distribution</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="3 sur 10">
+                <blockquote>La boutique en ligne, la comptabilité, l’inventaire&nbsp;: trois systèmes, trois vérités. Ma commis passe ses vendredis à retaper des chiffres d’un écran à l’autre.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Copropriétaire, commerce de détail</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="4 sur 10">
+                <blockquote>Tout le monde me dit qu’il existe surement un logiciel pour ça. J’en ai essayé quatre. Aucun ne fait vraiment ce qu’on fait. Est-ce que je suis rendu à le faire bâtir?</blockquote>
+                <figcaption>
+                    <span class="quote-role">Fondateur, services professionnels</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="5 sur 10">
+                <blockquote>J’ai trois soumissions sur mon bureau. Trois technologies, trois prix, et aucun moyen de savoir laquelle est la bonne.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Directeur général, PME</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="6 sur 10">
+                <blockquote>On m’a dit de tout mettre dans le nuage. Je ne sais pas ce que ça coute vraiment, ni où sont mes données, ni ce qui arrive si ça tombe un lundi matin.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Propriétaire, cabinet comptable</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="7 sur 10">
+                <blockquote>Mon neveu s’occupait de l’informatique. Il a un vrai emploi maintenant. Je n’ai personne à qui poser mes questions sans qu’on essaie de me vendre quelque chose.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Propriétaire, entreprise familiale</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="8 sur 10">
+                <blockquote>Le logiciel, un nouvel employé l’apprend en une journée. Nos trucs pour le contourner, en deux semaines.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Gestionnaire, transport</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="9 sur 10">
+                <blockquote>Le rapport que la banque me demande, ça me prend trois jours à le monter. Les chiffres existent quelque part, mais jamais au même endroit.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Présidente, construction</span>
+                </figcaption>
+            </figure>
+
+            <figure class="quote" role="group" aria-roledescription="citation" aria-label="10 sur 10">
+                <blockquote>Le fournisseur veut qu’on passe à la nouvelle version. C’est un gros montant, et personne ne peut me dire ce qu’on perd si on dit non.</blockquote>
+                <figcaption>
+                    <span class="quote-role">Directeur, organisme</span>
+                </figcaption>
+            </figure>
                 </div>
-                <div class="stories-nav">
-                    <button type="button" class="cta secondary" data-story="prev" aria-label="Situation précédente">&larr;</button>
-                    <span class="stories-count" aria-live="polite">1 / 10</span>
-                    <button type="button" class="cta secondary" data-story="next" aria-label="Situation suivante">&rarr;</button>
+            </div>
+
+            <div class="quotes-nav">
+                <!-- quotes.js fills this with one button per figure -->
+                <div class="quotes-dots" role="tablist" aria-labelledby="quotes-label"></div>
+                <div class="quotes-arrows">
+                    <button type="button" class="quotes-prev" aria-label="Situation précédente">&#8592;</button>
+                    <button type="button" class="quotes-next" aria-label="Situation suivante">&#8594;</button>
                 </div>
             </div>
         </section>
