@@ -46,7 +46,7 @@ function sessionParams(a, origin) {
         success_url: origin + l.success,
         cancel_url: origin + l.cancel,
         'automatic_tax[enabled]': 'true',
-        'allow_promotion_codes': 'true', // a 100 % code (ESSAI100) lets a test run end on the thanks page
+        'allow_promotion_codes': 'true', // ESSAI1 brings the total to 1 $: Stripe refuses a 0 $ payment
         'invoice_creation[enabled]': 'true',
         'custom_text[submit][message]': l.refund,
         'line_items[0][quantity]': '1',
