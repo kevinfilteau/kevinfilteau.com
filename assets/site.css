@@ -206,6 +206,44 @@ main {
     vertical-align: -0.10em;
 }
 
+/* Stories on the home page: one quote at a time, scroll-snap, arrows, slow auto-advance. */
+.stories { width: 100%; }
+
+.stories-track {
+    position: relative; /* slide offsets are measured from the track */
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.stories-track::-webkit-scrollbar { display: none; }
+.stories-track:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.7); outline-offset: 6px; border-radius: 6px; }
+
+.story {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    margin: 0;
+}
+
+.story blockquote { margin: 0; }
+.story p { line-height: 1.45; text-wrap: pretty; } /* size inherited from .prose */
+.story .qm { font-family: Georgia, 'Times New Roman', serif; font-size: 2.25rem; line-height: 0; vertical-align: -0.10em; }
+.story figcaption { margin-top: 1rem; color: rgba(240, 240, 240, 0.65); font-size: 1rem; }
+
+.stories-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.stories-nav .cta { padding: 0.5rem 1.1rem; font-size: 1rem; }
+.stories-count { color: rgba(240, 240, 240, 0.65); font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+
 /* The booking form: one step visible at a time (site.js toggles the hidden attribute). */
 .book {
     width: 100%;
@@ -568,6 +606,7 @@ main {
     .brand a { font-size: 1.35rem; }
     .actions .cta { flex: 1; text-align: center; }
     .prose { font-size: 1.15rem; }
+    .story .qm { font-size: 1.9rem; }
     .quote p { font-size: 1.15rem; }
     .quote .qm { font-size: 1.9rem; }
 }
