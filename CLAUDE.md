@@ -41,8 +41,8 @@ visit to the privacy page comes back to the same step):
    the visitor accepts or refines. No fallback form: if the model is down, the visitor sees an error.
 3. Review, then email, mobile (texts only) and the preferred channel, SMS or email, then pay.
    `validateContact` checks the full contact. The summary and the contact go to `functions/api/checkout.js`, which creates a Stripe
-   Checkout Session over the REST API with the summary and the contact as metadata on the session and on
-   the payment, then returns the Checkout URL. Stripe sends the visitor back to `reserver/merci/` (`noindex`,
+   Checkout Session over the REST API, with no metadata (Stripe keeps only its own billing contact), then
+   returns the Checkout URL. Stripe sends the visitor back to `reserver/merci/` (`noindex`,
    not in the sitemap).
 
 On `localhost` the page adds a "Remplir (test)" button that fills every contact field; it never appears

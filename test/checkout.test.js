@@ -41,20 +41,11 @@ test('creates a Stripe Checkout session and returns its URL', async () => {
     assert.match(p.get('custom_text[submit][message]'), /30 minutes/);
 });
 
-test('puts every answer in the metadata of the session and of the payment', async () => {
+test('sends nothing but the billing email to Stripe: no metadata on the session or the payment', async () => {
     const { calls } = await call(answers);
-    const p = calls[0].params;
-    for (const scope of ['metadata', 'payment_intent_data[metadata]']) {
-        assert.equal(p.get(`${scope}[business]`), 'We sell tires.');
-        assert.equal(p.get(`${scope}[size]`), '11-50');
-        assert.equal(p.get(`${scope}[challenges]`), 'stuck, integration');
-        assert.equal(p.get(`${scope}[situation]`), 'A project is late.');
-        assert.equal(p.get(`${scope}[focus]`), 'Unblock it.');
-        assert.equal(p.get(`${scope}[name]`), 'Ann');
-        assert.equal(p.get(`${scope}[company]`), 'Tires inc.');
-        assert.equal(p.get(`${scope}[phone]`), '+14185550199');
-        assert.equal(p.get(`${scope}[channel]`), 'sms');
-    }
+    const keys = Array.from(calls[0].params.keys());
+    assert.equal(keys.some((k) => k.startsWith('metadata') || k.includes('metadata')), false);
+    assert.equal(calls[0].params.get('customer_email'), 'ann@example.com');
 });
 
 test('rejects a body that is not JSON', async () => {

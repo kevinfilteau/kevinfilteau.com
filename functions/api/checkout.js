@@ -1,6 +1,6 @@
 // Turns the booking form answers into a Stripe Checkout session.
-// The answers travel as metadata on the session and on the payment, so they show
-// up on the payment in the Stripe dashboard. Nothing is stored here.
+// Stripe sees only the billing contact it collects itself; the answers go to KV
+// for the webhook and the reminder, and reach Kevin by email once paid.
 // Calls the Stripe REST API directly: no dependency, no build step.
 // Needs STRIPE_SECRET_KEY and TURNSTILE_SECRET_KEY as encrypted variables on the
 // Pages project (and in .dev.vars for `wrangler pages dev`). With STRIPE_TEST_SECRET_KEY
@@ -56,11 +56,7 @@ function sessionParams(a, origin) {
         'line_items[0][price_data][tax_behavior]': 'exclusive',
         'line_items[0][price_data][product_data][name]': l.product
     });
-    const meta = { name: a.name, company: a.company, phone: a.phone, channel: a.channel, size: a.size, challenges: a.challenges.join(', '), business: a.business, situation: a.situation, focus: a.focus };
-    for (const [k, v] of Object.entries(meta)) {
-        p.set(`metadata[${k}]`, v);
-        p.set(`payment_intent_data[metadata][${k}]`, v);
-    }
+    // Stripe keeps only its own billing contact: the summary and the rest stay in KV for 7 days.
     return p;
 }
 

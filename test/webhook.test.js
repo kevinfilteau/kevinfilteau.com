@@ -51,13 +51,14 @@ test('a second delivery of the same paid session sends nothing', async () => {
     assert.equal(sent.mail.length, 0);
 });
 
-test('a paid session without a stored lead still confirms from the session data', async () => {
+test('a paid session without a stored lead only tells Kevin, since Stripe holds no answers', async () => {
     const { sent, deps } = fakes();
-    const session = { id: 'cs_live_9', customer_details: { email: 'bob@example.com' }, metadata: { name: 'Bob', company: 'B inc.', phone: '+14185550100', channel: 'email', business: 'x', size: 'solo', challenges: 'other', situation: 'y', focus: '' } };
+    const session = { id: 'cs_live_9', customer_details: { email: 'bob@example.com' } };
     const res = await deliver('checkout.session.completed', session, { LEADS: kv() }, deps);
     assert.equal(res.status, 200);
-    assert.equal(sent.mail[0].to, 'bob@example.com');
-    assert.match(sent.mail[0].text, /courriel/);
+    assert.equal(sent.mail.length, 1);
+    assert.equal(sent.mail[0].to, 'info@kevinfilteau.com');
+    assert.match(sent.mail[0].text, /cs_live_9|bob@example\.com/);
 });
 
 test('an expired unpaid session sends the reminder by text when the visitor chose sms', async () => {

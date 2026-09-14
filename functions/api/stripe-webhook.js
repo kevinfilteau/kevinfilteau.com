@@ -1,8 +1,7 @@
 // Stripe calls this for checkout.session.completed and checkout.session.expired.
 // Paid: confirmation email to the visitor, a copy to Kevin, the lead marked paid.
 // Expired unpaid: one reminder, by text or email as the visitor chose, with a resume link.
-// The lead comes from KV (stored by /api/checkout); a paid session without one falls
-// back to the session's metadata. Needs STRIPE_WEBHOOK_SECRET, SMTP_USER, SMTP_PASS,
+// The lead comes from KV (stored by /api/checkout); Stripe holds no copy of the answers. Needs STRIPE_WEBHOOK_SECRET, SMTP_USER, SMTP_PASS,
 // TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM and the LEADS binding.
 import { verifyStripeSignature } from '../../lib/stripe-signature.js';
 import { sendMail, sendSms, confirmation, notice, reminder, KEVIN } from '../../lib/notify.js';
@@ -10,11 +9,6 @@ import { sendMail, sendSms, confirmation, notice, reminder, KEVIN } from '../../
 const TTL = 7 * 24 * 3600;
 const ORIGIN = 'https://kevinfilteau.com';
 
-const fromSession = (s) => {
-    const m = s.metadata || {};
-    return { sessionId: s.id, name: m.name, company: m.company, email: (s.customer_details || {}).email, phone: m.phone, channel: m.channel,
-        business: m.business, size: m.size, challenges: (m.challenges || '').split(', ').filter(Boolean), situation: m.situation, focus: m.focus || '' };
-};
 
 export const handler = ({ sendMail, sendSms }) => async ({ request, env }) => {
     const payload = await request.text();
@@ -28,7 +22,11 @@ export const handler = ({ sendMail, sendSms }) => async ({ request, env }) => {
     try {
         if (event.type === 'checkout.session.completed') {
             if (lead && lead.paid) return new Response('ok');
-            lead = lead || fromSession(session);
+            if (!lead) {
+                // Stripe holds no copy of the answers: without the lead, Kevin gets the session id to look up.
+                await sendMail(env, { to: KEVIN.email, subject: 'Réservation payée sans fiche : ' + session.id, text: 'Session Stripe payée, mais la fiche a expiré. Courriel de facturation : ' + ((session.customer_details || {}).email || 'inconnu') });
+                return new Response('ok');
+            }
             await sendMail(env, { to: lead.email, ...confirmation(lead) });
             await sendMail(env, { to: KEVIN.email, ...notice(lead) });
             await env.LEADS.put(session.id, JSON.stringify({ ...lead, paid: true }), { expirationTtl: TTL });
