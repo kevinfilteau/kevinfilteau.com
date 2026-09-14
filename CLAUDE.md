@@ -23,8 +23,6 @@ Pages hold only their own content and metadata.
 
 To add a page, copy the shell of `index.html`: link `/assets/site.css`, defer `/assets/site.js`, copy the `.rays` div into the body, then write sections inside `<main>`. Do not restyle the layout in the page.
 
-The `prepaid-code/` pages keep their own article layout and inline CSS; they do not use `assets/site.css`.
-
 ## Booking flow
 
 The offer is a paid one-hour consultation. `reserver/` holds a three-step form driven by `assets/site.js`
