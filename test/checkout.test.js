@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { onRequestPost } from '../functions/api/checkout.js';
+import { handler } from '../functions/api/checkout.js';
+
+const mails = [];
+const onRequestPost = handler({ sendMail: async (env, m) => { mails.push(m); } });
 
 const answers = {
     summary: { business: 'We sell tires.', size: '11-50', challenges: ['stuck', 'integration'], situation: 'A project is late.', focus: 'Unblock it.' },
@@ -11,7 +14,7 @@ function call(body, fetchImpl, human = true) {
     const calls = [];
     const stripe = fetchImpl || (async (url, init) => {
         calls.push({ url, params: new URLSearchParams(init.body), headers: init.headers });
-        return new Response(JSON.stringify({ url: 'https://checkout.stripe.com/c/pay/cs_test' }), { status: 200 });
+        return new Response(JSON.stringify({ id: 'cs_test', url: 'https://checkout.stripe.com/c/pay/cs_test' }), { status: 200 });
     });
     globalThis.fetch = async (url, init) => String(url).includes('turnstile') ? new Response(JSON.stringify({ success: human }), { status: 200 }) : stripe(url, init);
     const request = new Request('https://kevinfilteau.com/api/checkout', {
@@ -39,6 +42,29 @@ test('creates a Stripe Checkout session and returns its URL', async () => {
     assert.equal(p.get('cancel_url'), 'https://kevinfilteau.com/reserver/');
     assert.match(p.get('line_items[0][price_data][product_data][name]'), /Consultation/);
     assert.match(p.get('custom_text[submit][message]'), /30 minutes/);
+});
+
+test('tells Kevin about the request as soon as the session exists, with the session id and the answers', async () => {
+    mails.length = 0;
+    await call(answers);
+    assert.equal(mails.length, 1);
+    assert.equal(mails[0].to, 'info@kevinfilteau.com');
+    assert.match(mails[0].subject, /Nouvelle demande : Ann, Tires inc\./);
+    assert.match(mails[0].text, /cs_test/);
+    assert.match(mails[0].text, /A project is late\./);
+    assert.match(mails[0].text, /pas encore/);
+});
+
+test('a failed notice does not block the visitor', async () => {
+    const original = console.error;
+    console.error = () => {};
+    try {
+        const failing = handler({ sendMail: async () => { throw new Error('smtp down'); } });
+        globalThis.fetch = async (url, init) => String(url).includes('turnstile') ? new Response('{"success":true}', { status: 200 }) : new Response(JSON.stringify({ id: 'cs_test_1', url: 'https://checkout.stripe.com/c/pay/cs_test_1' }), { status: 200 });
+        const request = new Request('https://kevinfilteau.com/api/checkout', { method: 'POST', headers: { 'X-Turnstile-Token': 'tok' }, body: JSON.stringify(answers) });
+        const res = await failing({ request, env: { STRIPE_SECRET_KEY: 'sk', TURNSTILE_SECRET_KEY: 'ts' } });
+        assert.equal(res.status, 200);
+    } finally { console.error = original; }
 });
 
 test('sends nothing but the billing email to Stripe: no metadata on the session or the payment', async () => {

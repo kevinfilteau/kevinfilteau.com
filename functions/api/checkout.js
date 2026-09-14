@@ -10,6 +10,7 @@
 import { human } from '../../lib/turnstile.js';
 import { SIZES, CHALLENGES } from './chat.js';
 import { validateContact } from '../../lib/contact.js';
+import { sendMail, notice, KEVIN } from '../../lib/notify.js';
 
 const PRICE = { currency: 'cad', unit_amount: 25000 };
 const TEXT_MAX = 500; // Stripe caps a metadata value at 500 characters.
@@ -64,7 +65,7 @@ const json = (body, status) => new Response(JSON.stringify(body), { status, head
 
 const testRequested = (b) => Boolean(b && b.test === true);
 
-export async function onRequestPost({ request, env }) {
+export const handler = ({ sendMail }) => async ({ request, env, waitUntil }) => {
     let answers = null, body = null;
     try { body = await request.json(); answers = validate(body); } catch (err) { answers = null; }
     if (!answers) return json({ error: 'invalid' }, 400);
@@ -85,10 +86,16 @@ export async function onRequestPost({ request, env }) {
         }
         const session = await res.json();
         // The webhook confirms from this lead, and the reminder brings the visitor back to it.
-        if (env.LEADS) await env.LEADS.put(session.id, JSON.stringify({ ...answers, sessionId: session.id, test: key !== env.STRIPE_SECRET_KEY, paid: false, createdAt: Date.now() }), { expirationTtl: 7 * 24 * 3600 });
+        const lead = { ...answers, sessionId: session.id, test: key !== env.STRIPE_SECRET_KEY, paid: false, createdAt: Date.now() };
+        if (env.LEADS) await env.LEADS.put(session.id, JSON.stringify(lead), { expirationTtl: 7 * 24 * 3600 });
+        // Kevin hears about the request now, with the session id, whether or not the payment follows.
+        const tell = sendMail(env, { to: KEVIN.email, ...notice(lead) }).catch((err) => console.error('checkout notice failed: ' + (err && err.name)));
+        if (waitUntil) waitUntil(tell); else await tell;
         return json({ url: session.url }, 200);
     } catch (err) {
         console.error('stripe checkout session unreachable: ' + (err && err.name));
         return json({ error: 'unavailable' }, 502);
     }
-}
+};
+
+export const onRequestPost = handler({ sendMail });

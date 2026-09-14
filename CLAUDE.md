@@ -76,7 +76,9 @@ stores the contact and the summary under the Stripe session id (7 days). Stripe 
 `functions/api/stripe-webhook.js` (endpoint `we_1UFGPAGVehei72YpJrpSZxi9`, secret `STRIPE_WEBHOOK_SECRET`,
 signature checked by `lib/stripe-signature.js`):
 
-- `checkout.session.completed`: confirmation email to the visitor, a copy to info@kevinfilteau.com,
+- As soon as the session exists, `/api/checkout` emails Kevin "Nouvelle demande" with the session id and
+  the answers, without waiting for the payment (sent in the background, a failure is only logged).
+- `checkout.session.completed`: confirmation email to the visitor, "Paiement reçu" to info@kevinfilteau.com,
   lead marked paid. Sent once even if Stripe delivers twice.
 - `checkout.session.expired` (24 h after the session was created, unpaid): one reminder by text or
   email, per the visitor's choice, with `/reserver/?resume=<session id>`. That link asks

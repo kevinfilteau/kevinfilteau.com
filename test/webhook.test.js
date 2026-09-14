@@ -38,7 +38,9 @@ test('a paid session sends the confirmation to the visitor and a copy to Kevin, 
     assert.match(visitor.text, /texto/);
     assert.match(visitor.text, /Projet en retard/);
     assert.equal(kevin.to, 'info@kevinfilteau.com');
+    assert.match(kevin.subject, /Paiement reçu/);
     assert.match(kevin.text, /Pneus inc\./);
+    assert.match(kevin.text, /cs_live_1/);
     assert.match(kevin.text, /\+14185550199/);
     assert.equal(JSON.parse(LEADS.store.get('cs_live_1')).paid, true);
 });

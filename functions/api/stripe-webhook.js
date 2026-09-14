@@ -4,7 +4,7 @@
 // The lead comes from KV (stored by /api/checkout); Stripe holds no copy of the answers. Needs STRIPE_WEBHOOK_SECRET, SMTP_USER, SMTP_PASS,
 // TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM and the LEADS binding.
 import { verifyStripeSignature } from '../../lib/stripe-signature.js';
-import { sendMail, sendSms, confirmation, notice, reminder, KEVIN } from '../../lib/notify.js';
+import { sendMail, sendSms, confirmation, paidNotice, reminder, KEVIN } from '../../lib/notify.js';
 
 const TTL = 7 * 24 * 3600;
 const ORIGIN = 'https://kevinfilteau.com';
@@ -28,7 +28,7 @@ export const handler = ({ sendMail, sendSms }) => async ({ request, env }) => {
                 return new Response('ok');
             }
             await sendMail(env, { to: lead.email, ...confirmation(lead) });
-            await sendMail(env, { to: KEVIN.email, ...notice(lead) });
+            await sendMail(env, { to: KEVIN.email, ...paidNotice(lead) });
             await env.LEADS.put(session.id, JSON.stringify({ ...lead, paid: true }), { expirationTtl: TTL });
         } else if (event.type === 'checkout.session.expired') {
             if (!lead || lead.paid || lead.reminded) return new Response('ok');
