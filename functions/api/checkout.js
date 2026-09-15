@@ -17,7 +17,7 @@ const TEXT_MAX = 500; // Stripe caps a metadata value at 500 characters.
 
 const CHECKOUT = {
     locale: 'fr-CA',
-    product: 'Consultation d’une heure avec Kevin Filteau',
+    product: 'Rencontre d’une heure avec Kevin Filteau',
     success: '/reserver/merci/',
     cancel: '/reserver/',
     refund: 'Remboursable à 100 %. Si après 30 minutes vous ne voyez pas comment je peux vous aider, on arrête et je vous rembourse. Si vous estimez que je ne vous ai pas aidé, dites-le-moi dans les 7 jours suivant la rencontre et je vous rembourse en entier. Sans question.'

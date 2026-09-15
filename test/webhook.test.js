@@ -34,6 +34,10 @@ test('a paid session sends the confirmation to the visitor and a copy to Kevin, 
     const [visitor, kevin] = sent.mail;
     assert.equal(visitor.to, 'anne@example.com');
     assert.match(visitor.subject, /réservé/i);
+    // Same words as the booking page: a meeting, not an hour sold.
+    assert.match(visitor.subject, /votre rencontre avec Kevin Filteau/);
+    assert.match(visitor.text, /Votre rencontre d’une heure est réservée/);
+    assert.doesNotMatch(visitor.text, /L’heure devrait/);
     assert.match(visitor.text, /Anne/);
     assert.match(visitor.text, /texto/);
     assert.match(visitor.text, /Projet en retard/);

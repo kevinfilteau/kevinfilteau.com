@@ -40,7 +40,7 @@ test('creates a Stripe Checkout session and returns its URL', async () => {
     assert.equal(p.get('customer_email'), 'ann@example.com');
     assert.equal(p.get('success_url'), 'https://kevinfilteau.com/reserver/merci/');
     assert.equal(p.get('cancel_url'), 'https://kevinfilteau.com/reserver/');
-    assert.match(p.get('line_items[0][price_data][product_data][name]'), /Consultation/);
+    assert.equal(p.get('line_items[0][price_data][product_data][name]'), 'Rencontre d’une heure avec Kevin Filteau');
     assert.match(p.get('custom_text[submit][message]'), /30 minutes/);
 });
 
