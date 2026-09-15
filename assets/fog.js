@@ -1,5 +1,5 @@
 // The fog over the home page. The scroll sets targets; a frame loop eases --h (headline),
-// --p (fog) and --s ("Parlons-en.") toward them, so the fog keeps clearing a moment after
+// --p (fog) and --s (subheading) toward them, so the fog keeps clearing a moment after
 // the scroll stops. The fog CSS waits for .fogged on <html>: without JS or with reduced
 // motion the class never comes and the page renders clear.
 (function () {
