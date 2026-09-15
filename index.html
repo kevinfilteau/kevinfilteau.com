@@ -46,13 +46,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@600&family=Urbanist:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/site.css?v=2026-09-13u">
-    <script src="/assets/site.js?v=2026-09-13u" defer></script>
-    <script src="/assets/quotes.js?v=2026-09-13u" defer></script>
+    <link rel="stylesheet" href="/assets/site.css?v=2026-09-15h">
+    <script src="/assets/site.js?v=2026-09-15h" defer></script>
+    <script src="/assets/quotes.js?v=2026-09-15h" defer></script>
+    <script src="/assets/fog.js?v=2026-09-15h" defer></script>
 </head>
 <body>
     <div class="rays" aria-hidden="true">
-        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-13u" tabindex="-1"></object>
+        <object type="image/svg+xml" data="/assets/rays.svg?v=2026-09-15h" tabindex="-1"></object>
+    </div>
+
+    <div class="fog" aria-hidden="true">
+        <div class="veil"></div>
+        <div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div>
     </div>
 
     <header class="brand">
@@ -61,9 +67,14 @@
 
     <main>
         <header class="hero">
-            <h1>Bloqué? Parlons-en.</h1>
-            <p class="lede">Une heure avec un programmeur qui bâtit des logiciels d’entreprise depuis 1996. Vous apportez le problème. Vous repartez avec une direction.</p>
+            <h1>Dans le brouillard<br>technologique?</h1>
+            <p class="sub">Parlons-en.</p>
+            <p class="scroll" aria-hidden="true">Défiler</p>
         </header>
+
+        <section class="prose">
+            <p>Une heure avec un programmeur qui bâtit des logiciels d’entreprise depuis 1996. Vous apportez le problème. Vous repartez avec une direction.</p>
+        </section>
 
         <section class="prose">
             <h2>Ce que vous obtenez en une heure</h2>

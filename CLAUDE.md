@@ -13,6 +13,7 @@ Layout is global and lives in `assets/`:
 - `assets/site.css` — the layout every page uses: rays background, glass panel (`main`), `.hero`, `.prose`, `.quote`, `.book` form, `.contact`.
 - `assets/site.js` — reveals the obfuscated email and phone, drives the booking form. Loaded with `defer`.
 - `assets/quotes.js` — the story carousel on the home page (`.quotes`). Loaded with `defer` by `index.html` only.
+- `assets/fog.js` — the fog on the home page: clouds (`.fog`) over the page that part as the visitor scrolls, and the `.hero` headline that sharpens. It eases the CSS vars `--h`, `--p`, `--s` and sets `.fogged` on `<html>`; every fog rule in `site.css` waits for that class, so without JS or with reduced motion the page is clear. `CLEAR_SPEED` sets how fast the fog clears. Loaded with `defer` by `index.html` only.
 - `assets/rays.svg` — the animated background, embedded with `<object>`. Chrome freezes an SVG used as a CSS `background-image` or in an `<img>` on its first frame; `<object>` gives it a document, so the sweep runs and the `prefers-reduced-motion` rule inside the file is honoured.
 
 **Bump `?v=<date>` on the asset links in every page whenever you change a file in `assets/`.** Cloudflare
