@@ -125,16 +125,12 @@ main {
    --s clears "Parlons-en.", --p parts the clouds. Nothing applies before fog.js sets
    .fogged, so the page stays clear without JS or with reduced motion. */
 .fogged { --h: 0; --p: 0; --s: 0; }
-/* The panel starts invisible and appears as the fog clears. Its tint (::before) and its blur
-   (::after) are layers of their own, so only their opacity changes per frame and the tall
-   panel is never repainted. Moving clouds above a backdrop filter make the browser redraw the
-   blur every frame, so the blur only fades in once the fog is gone (fog.js sets .clear) and
-   the fog leaves the page. */
+/* The panel starts invisible and appears as the fog clears. The whole glass (tint, blur,
+   border, shadow) sits on ::before, so only its opacity changes per frame and the tall panel
+   is never repainted. Moving clouds above a backdrop filter make the browser redraw the blur
+   every frame, so the fog leaves the page once it is fully clear (fog.js sets .clear). */
 .fogged main { position: relative; isolation: isolate; backdrop-filter: none; -webkit-backdrop-filter: none; background: none; border-color: transparent; box-shadow: none; }
-.fogged main::before, .fogged main::after { content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; pointer-events: none; }
-.fogged main::before { border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(0, 0, 0, 0.42); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); opacity: var(--p); }
-.fogged main::after { backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%); opacity: 0; transition: opacity 0.6s ease-out; }
-.clear main::after { opacity: 1; }
+.fogged main::before { content: ''; position: absolute; inset: -1px; z-index: -1; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: inherit; background: rgba(0, 0, 0, 0.42); backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); opacity: var(--p); pointer-events: none; }
 .clear .fog { display: none; }
 .fogged .hero h1 { filter: blur(calc(3px - var(--h) * 3px)); opacity: calc(0.75 + var(--h) * 0.25); }
 .fogged .hero .sub { filter: blur(calc(7px - var(--s) * 7px)); opacity: calc(0.55 + var(--s) * 0.45); animation: emerge 2.4s ease-out 1.1s both; }
